@@ -1,0 +1,286 @@
+/* CSS variables */
+:root {
+	--main-color: #00cc99;
+	--secondary-color: #404040;
+	--background-color: whitesmoke;
+}
+
+
+/* General */
+html, body, .content {
+	height: 100%;
+	overflow: hidden;
+}
+
+form {
+	width: 100%;
+}
+
+.displayNone {
+	display: none;
+}
+
+.contentBody {
+	background-color: whitesmoke;
+	padding: 0 !important;
+}
+
+/* Main menu */
+.mainMenu {
+	background-color: var(--secondary-color);
+	height: 100%;
+	color: white;
+	
+	-webkit-box-shadow: 5px 0px 5px -2px rgba(51,51,51,0.72);
+	-moz-box-shadow: 5px 0px 5px -2px rgba(51,51,51,0.72);
+	box-shadow: 5px 0px 10px -2px rgba(51,51,51,0.72);
+	z-index: 1;
+}
+
+.menuRow {
+	padding: 0px 0px 10px 15px;
+	border-bottom: 1px solid #333333;
+	transition: 0.4s;
+	cursor: pointer;
+	height: 50px;
+	line-height: 50px;
+}
+
+.menuRow:hover {
+	background-color: var(--main-color);
+
+}
+
+.menuRow.active {
+	background-color: var(--main-color);
+}
+
+.menuItem {
+
+}
+
+
+/* Barcode scanner inside main menu */
+.barcodeScanRow {
+	bottom: 0;
+	position: absolute;
+	width: 100%;
+}
+
+.barcodeScanOption {
+	background-color: darkgray;
+	height: 80px;
+	text-align: center;
+}
+
+.barcodeScanField {
+	width: 100%;
+	height: 50px;
+	border-top: 1px solid var(--main-color);
+	border-right: none;
+}
+
+.barcodeSubmissionButton {
+	border: none;
+	background-color: var(--main-color);
+	cursor: pointer;
+}
+
+
+/* Barcode scanner camera */
+.barcodeScannerCameraSection {
+	width: 0px;
+	height: 0px;
+	display: none;
+}
+
+.barcodeScannerCameraSection.active {
+	display: block;
+}
+
+.barcodeScannerCameraSection video, canvas {
+	position: absolute;
+	width: 90%;
+	margin: 0px 0px 0px 5%;
+	height: fit-content;
+	z-index: 1;
+}
+
+
+/* Forms */
+.numericalField {
+	border: none;
+	background-color: #ffffff;
+	border-bottom: 1px solid #333333;
+}
+
+.optionField {
+	background-color: white;
+}
+
+
+/* |||||||||| Core sections |||||||||| */
+.coreSection {
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
+.coreSection.active {
+	display: block;
+}
+
+.coreSectionRow {
+	height: 100%;
+}
+
+
+/* \\\\\\\\ Scan Core Section //////// */
+
+/* Placeholder */
+.scanPlaceholderSection {
+	text-align: center;
+	font-size: 25px;
+	height: 100%;
+}
+
+.scanPlaceholderImage {
+	width: inherit;
+}
+
+/* Regular product information */
+.scanProductTopBar {
+	height: 50px;
+	line-height: 50px;
+}
+
+.scanProductBarcode {
+	background-color: var(--main-color);
+	font-size: 22px;
+	text-align: center;
+}
+
+.scanProductName {
+	font-size: 22px;
+	background-color: var(--secondary-color);
+	color: white;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+
+/* |||||||||| Action Menus |||||||||| */
+
+/* General */
+.actionMenu {
+	display: none;
+	background-color: var(--main-color);
+}
+
+.actionMenu.active {
+	display: block;
+}
+
+.actionMenuTitle {
+	text-align: center;
+	color: white;
+	width: 100%;
+	padding: 10px 0px 0px 0px;
+	font-weight: bold;
+}
+
+.actionMenuSelect {
+	background-color: var(--background-color);
+	width: 90%;
+	height: 50px;
+	margin: 0px 0px 0px 5%;
+	border: none;
+	padding: 0px 5px 0px 5px;
+}
+
+.actionMenuOption {
+
+}
+
+.actionMenuSection {
+	display: none;
+}
+
+.actionMenuSection.active {
+	display: block;
+}
+
+/* \\\\\\\\ Scan action menu //////// */
+
+.productWarehouse {
+	border: 1px solid black;
+}
+
+.productWarehouseOption {
+	display: none;
+}
+
+.productWarehouseOption.active {
+	display: block;
+}
+
+.productMenuFromWarehouse {
+	text-align: center;
+}
+
+.productStockOptionField {
+	color: white;
+	background: none;
+	border: none;
+	border-bottom: 1px solid white;
+	padding: 0px 0px 5px 0px;
+}
+
+.productStockOptionField {
+	background-color: var(--main-color);
+}
+
+.productMenuArrow {
+	color: white;
+	text-align: center;
+	font-size: 25px;
+	padding: 15px 0px 15px 0px; 
+}
+
+.productMenuToWarehouse {
+	text-align: center;
+}
+
+.productWarehouseOption {
+	border: 1px solid white;
+	border-radius: 5px;
+	width: 80%;
+	text-align: center;
+	color: white;
+	margin: 15px 0px 0px 10%;
+}
+
+.moveProductStockAmount {
+	color: white;
+	margin: 15px 0px 0px 0px;
+}
+
+.productWarehouseNumericalField {
+	background-color: var(--main-color);
+	color: white;
+	border-bottom: 1px solid white;
+	text-align: center;
+	width: 100%;
+}
+
+.moveProductStockButtonSection {
+	text-align: center;
+}
+
+.moveProductStockButton {
+	background-color: white;
+	color: #333333;
+	border-radius: 5px;
+	border: none;
+	margin: 20px 0px 0px 0px;
+}

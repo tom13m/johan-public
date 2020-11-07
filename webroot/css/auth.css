@@ -1,0 +1,14 @@
+/* CSS file for the auth components: login */
+
+:root {
+	--main-color: #0099cc;
+}
+
+
+/* Generic */
+html, body, form {
+	height: 100%;
+}
+
+
+/* Login page */
