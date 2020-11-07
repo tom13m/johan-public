@@ -1,6 +1,5 @@
 /* All Javascript functions for the Mobile version of the system */
 
-
 function processBarcode() {
 	let barcodeTarget = document.getElementById('barcodeTarget');
 	let barcode = barcodeTarget.value;
