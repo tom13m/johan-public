@@ -4,13 +4,15 @@
 /* OnScan initialisation */
 onScan.attachTo(document, {
 	suffixKeyCodes: [13], // enter-key expected at the end of a scan
-	reactToPaste: true, // Compatibility to built-in scanners in paste-mode (as opposed to keyboard-mode)
+//	reactToPaste: true, // Compatibility to built-in scanners in paste-mode (as opposed to keyboard-mode)
 	minLength: 5,
 	onScan: function(sCode, iQty) { // Alternative to document.addEventListener('scan')
 		
 		let barcodeTarget = document.getElementById('barcodeTarget');
 		
 		barcodeTarget.value = sCode;
+		
+		document.getElementById('barcodeTargetButton').click();
 	}
 });
 
@@ -96,10 +98,34 @@ function capitalize(string = null) {
 function serializeFormData(form) {
 	if (form != null) {
 		let data = {};
+//		let formData = new FormData(form);
+//		
+//		for (var pair of formData.entries()) {
+//			if (typeof(pair[1]) === 'object' && typeof(pair[1]['name'] === 'string')) {
+////				console.log(pair[1]);
+//				
+////				data[pair[0]] = {
+////					'lastModified'     : pair[1].lastModified,
+////					'lastModifiedDate' : pair[1].lastModifiedDate,
+////					'name'             : pair[1].name,
+////					'size'             : pair[1].size,
+////					'type'             : pair[1].type
+////				};
+//				
+////				data[pair[0]] = pair[1];
+//				data[pair[0]] = pair[1];
+//			} else {
+//				data[pair[0]] = pair[1];
+//			}
+//		}
+//		
+//		data = formData;
 		
 		$.each($(form).serializeArray(), function() {
 			data[this.name] = this.value;
 		});
+		
+//		console.log(data);
 		
 		return data;
 	} else {
@@ -128,6 +154,25 @@ function setActive(c, id) {
 	});
 	
 	active.classList.add('active');
+}
+
+/* Function for giving an error message */
+function giveError(errorTemplate) {
+	let elementPath = 'errorTemplates_templates_' + errorTemplate;
+	let elementId = 'errorTemplate';
+
+	renderElement(elementPath, null, elementId, complete);
+	
+	function complete() {
+		/* Showing error message and setting timer for removal */
+		let errorTemplate = document.getElementById('errorTemplate');
+		
+		errorTemplate.classList.add('active');
+		
+		setTimeout(function() {
+			errorTemplate.classList.remove('active');
+		}, 6000);
+	}
 }
 
 /* Function for redirecting */

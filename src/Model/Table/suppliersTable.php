@@ -4,12 +4,10 @@ namespace App\Model\Table;
 
 use Cake\ORM\Table;
 
-class WarehousesTable extends Table
+class SuppliersTable extends Table
 {
     public function initialize(array $config): void {
-    	$this->belongsToMany('Products', [
-            'through' => 'WarehousesProducts'
-        ]);
+    	$this->hasMany('Products');
 		
 		$this->hasOne('Locations');
     }

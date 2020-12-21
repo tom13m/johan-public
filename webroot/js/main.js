@@ -14,7 +14,7 @@ function processBarcode() {
 		let coreSection = getParamVariable('coreSection');
 
 		if (coreSection == false || coreSection == 'scan') {	
-			ajaxRequest('main', 'getProductData', data, progressBarcode);
+			ajaxRequest('main', 'initScanCoreSection', data, progressBarcode);
 
 			function progressBarcode(data) {
 				/* Opening scan core section and setting data */
@@ -42,10 +42,15 @@ function openCoreSection(section = null, data = null) {
 
 		/* Rendering content of chosen section if not yet done */
 		if ($(openCoreSection).children().length == 0) {
-			let elementPath = 'coreSections_' + section + 'CoreSection';
-			let elementId = section + 'CoreSection';
+			action = 'init' + capitalize(section) + 'CoreSection';
+			$data = ajaxRequest('main', action, null, continueOpenCoreSection);
 
-			renderElement(elementPath, data, elementId);
+			function continueOpenCoreSection(data) {
+				let elementPath = 'coreSections_' + section + 'CoreSection';
+				let elementId = section + 'CoreSection';
+
+				renderElement(elementPath, data, elementId);
+			}
 		} else if (data != null) {
 			$(openCoreSection).empty();
 
@@ -62,6 +67,7 @@ function openCoreSection(section = null, data = null) {
 
 		appendParamVariables(paramVariables);
 	}
+
 }
 
 /* Function for changing a visible action menu */
@@ -84,7 +90,7 @@ function changeActionMenu(coreSection, actionMenu) {
 
 /* Function for switching between warehouse options */
 function switchProductWarehouse(warehouseId, action) {
-	let productWarehousesOptions = document.querySelectorAll('.productWarehouseOption.' + action);
+	let productWarehousesOptions = document.querySelectorAll('.warehouseOption.' + action);
 	let productWarehouseChosenOption = document.getElementById('productWarehouseOption' + capitalize(action) + warehouseId);
 
 	/* Hiding and showing options */
@@ -111,23 +117,89 @@ function moveProductStock() {
 	function processProductStockMove(data) {
 		/* Rerendering stock content */
 		renderElement('coreSections_scanCoreSection_productStock', data, 'scanProductStockSection');
-		
+
 		/* Rerendering action section */
-		renderElement('actionMenus_scanActionMenu_stockMovement', data, 'scan_Action_stockMovement')
+		renderElement('actionMenus_scanActionMenu_stockMovement', data, 'scan_Action_stockMovement');
+		renderElement('actionMenus_scanActionMenu_stockCorrection', data, 'scan_Action_stockCorrection');
 	}
 }
 
+/* Function for correcting product stock */
+function correctProductStock() {
+	let form = document.getElementById('correctProductStockForm');
+	
+	/* Getting form data */
+	let formData = serializeFormData(form);
+	
+	/* Correcting product stock */
+	ajaxRequest('Products', 'correctProductStock', formData, processProductStockCorrection);
+	
+	/* Processing product stock movement to view */
+	function processProductStockCorrection(data) {
+		/* Rerendering general content */
+		renderElement('coreSections_scanCoreSection_productGeneral', data, 'scanProductGeneralSection');
+		
+		/* Rendering stock content */
+		renderElement('coreSections_scanCoreSection_productStock', data, 'scanProductStockSection');
+		
+		/* Rerendering action sections */
+		renderElement('actionMenus_scanActionMenu_stockMovement', data, 'scan_Action_stockMovement');
+		renderElement('actionMenus_scanActionMenu_stockCorrection', data, 'scan_Action_stockCorrection');
+	}
+}
+
+/* Function for editing a warehouse */
+function editWarehouse() {
+	let form = document.getElementById('editWarehouseScanActionMenuForm');
+	
+	/* Getting form data */
+	let formData = serializeFormData(form);
+	
+	/* Editing warehouse */
+	ajaxRequest('Warehouses', 'edit', formData, processWarehouseEdit);
+	
+	function processWarehouseEdit(data) {
+		/* Rerendering stock content */
+		renderElement('coreSections_scanCoreSection_productStock', data, 'scanProductStockSection');
+		
+		/* Rerendering action sections */
+		renderElement('actionMenus_scanActionMenu_editWarehouse', data, 'scan_Action_editWarehouse');
+	}
+}
+
+
+/* |||||||||||||||||||| Special functions |||||||||||||||||||| */
 
 /* Binding eventlisteners */
 function bindEventListeners() {
 	// Main menu rows active function
 	let mainMenuRows = document.getElementsByClassName('menuRow');
-	
+
 	$(mainMenuRows).each(function(i, mainMenuRow) {
 		mainMenuRow.addEventListener('click', function() { setActive('menuRow', mainMenuRow.id) });
+	});
+	
+	// Barcode target field
+	let barcodeTarget = document.getElementById('barcodeTarget');
+	
+	barcodeTarget.addEventListener('keyup', function(event) {
+		if (event.keyCode === 13) {
+			document.getElementById('barcodeTargetButton').click();
+		}
 	});
 }
 
 window.addEventListener('DOMContentLoaded', (event) => {
-    bindEventListeners();
+	bindEventListeners();
 });
+
+/* If page is loaded fire this event */
+$( window ).on( "load", function() {
+	// If coresection param is set then open that coresection
+	if (getParamVariable('coreSection') != false) {
+		openCoreSection(getParamVariable('coreSection'));
+		
+		let menuRow = getParamVariable('coreSection') + 'MenuRow';
+		setActive('menuRow', menuRow);
+	}
+})

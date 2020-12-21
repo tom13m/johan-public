@@ -28,10 +28,22 @@ class CreateWarehousesProducts extends AbstractMigration
 			'default' => null
 		])/*->addForeignKey('product_id', 'products', 'id', ['update' => 'cascade', 'delete' => 'set_null'])*/;
 		
+		$table->addColumn('minimum_stock', 'integer', [
+			'null' => false,
+			'length' => 3,
+			'default' => 0
+		]);
+		
+		$table->addColumn('maximum_stock', 'integer', [
+			'null' => false,
+			'length' => 3,
+			'default' => 0
+		]);
+		
 		$table->addColumn('stock', 'integer', [
 			'null' => false,
 			'length' => 3,
-			'default' => null
+			'default' => 0
 		]);
 		
         $table->create();

@@ -24,8 +24,7 @@ class CreateBookings extends AbstractMigration
 		
 		$table->addColumn('datetime', 'datetime', [
 			'null' => true,
-			'default' => 'CURRENT_TIMESTAMP',
-			'default' => null
+			'default' => 'CURRENT_TIMESTAMP'
 		]);
 		
 		$table->addColumn('amount', 'integer', [

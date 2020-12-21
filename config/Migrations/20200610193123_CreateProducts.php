@@ -34,9 +34,9 @@ class CreateProducts extends AbstractMigration
 			'default' => null
 		]);
 		
-		$table->addColumn('minimum_stock', 'integer', [
-			'null' => false,
-			'length' => 3,
+		$table->addColumn('supplier_id', 'integer', [
+			'null' => true,
+			'length' => 6,
 			'default' => null
 		]);
 		

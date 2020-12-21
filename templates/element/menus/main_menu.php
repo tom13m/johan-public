@@ -29,7 +29,7 @@
 		<div class="row">
 			<input type="text" id="barcodeTarget" class="barcodeScanField col-md-10", autocomplete="off">
 			
-			<button type="button" class="barcodeSubmissionButton col-md-2" onclick="processBarcode()"> <i class="fas fa-chevron-right"> </i> </button>
+			<button type="button" id="barcodeTargetButton" class="barcodeSubmissionButton col-md-2" onclick="processBarcode()"> <i class="fas fa-chevron-right"> </i> </button>
 		</div>
 	</div>
 </div>

@@ -25,8 +25,6 @@ class MainController extends AppController {
 			if (!empty($this->request->getData('data'))) {
                 $data = $this->request->getData('data');
 				
-//				debug($data);
-				
 				$this->set(compact('data'));
             }
 		}
@@ -44,49 +42,109 @@ class MainController extends AppController {
 	}
 	
 	/* Main function scan core section */
-	public function getProductData() {
+	public function initScanCoreSection() {
 		if ($this->request->is('post')) {
 			$data = $this->request->getData('data');
 			
-			// Finding product
-			$barcode = $data['barcode'];
-			
-			$this->loadModel('Products');
-			
-			$product = $this->Products->findByBarcode($barcode)->first();
-			
-			// Finding warehouses
-			$this->loadModel('Warehouses');
-			
-			$warehouses = $this->Warehouses->find()->contain(['Products' => [
-				'conditions' => [
-					'Products.id' => $product->id
-				]
-			]]);
-			
-			$warehousesList = [];
+			if ($data != null) {
+				// Finding product
+				$barcode = $data['barcode'];
 
-			Foreach ($warehouses as $warehouse) {
-				if (count($warehouse->products) > 0) {
-					$warehouse->productStock = $warehouse->products[0]->_joinData->stock;
+				$this->loadModel('Products');
+				
+				if ($this->Products->findByBarcode($barcode)->first() != null) {
+					$product = $this->Products->findByBarcode($barcode)->contain([
+						'Suppliers' => [
+							'fields' => [
+								'Suppliers.name'
+							]	
+						]
+					])->first();
+
+					$product->totalStock = 0;
+
+					// Finding warehouses
+					$this->loadModel('Warehouses');
+
+					$warehouses = $this->Warehouses->find()->contain(['Products' => [
+						'conditions' => [
+							'Products.id' => $product->id
+						]
+					]]);
+
+					$warehousesList = [];
+
+					Foreach ($warehouses as $warehouse) {
+						if (count($warehouse->products) > 0) {
+							$warehouse->productStock = $warehouse->products[0]->_joinData->stock;
+
+							$product->totalStock += $warehouse->productStock;
+						} else {
+							$warehouse->productStock = 0;
+						}
+
+						$warehouse->minimumStock = $warehouse->products[0]->_joinData->minimum_stock;
+						$warehouse->maximumStock = $warehouse->products[0]->_joinData->maximum_stock;
+
+						unset($warehouse->products);
+
+						array_push($warehousesList, ['value' => $warehouse->id, 'text' => $warehouse->name]);
+					}
+
+					// Finding booking reasons
+					$this->loadModel('BookingReasons');
+
+					$bookingReasonsList = $this->BookingReasons->find('list', ['keyField' => 'id', 'valueField' => 'name']);
+
+					/* Allowed actions for action menu */
+					$allowedActions = [
+						'stockMovement' => 'Voorraadverplaatsing',
+						'stockCorrection' => 'Voorraadcorrectie',
+						'editWarehouse' => 'Wijzig magazijn'
+					];
+
+					/* Resetting data array */
+					$data = [];
+						$data['product'] = $product;
+						$data['warehouses'] = $warehouses;
+						$data['warehousesList'] = $warehousesList;
+						$data['bookingReasonsList'] = $bookingReasonsList;
+						$data['allowedActions'] = $allowedActions;
+
+					$response = ['data' => $data];
 				} else {
-					$warehouse->productStock = 0;
+					$response['success'] = 0;
+					$response['errorTemplate'] = 'falseBarcode';
 				}
-				
-				unset($warehouse->products);
-				
-				array_push($warehousesList, ['value' => $warehouse->id, 'text' => $warehouse->name]);
+			} else {
+				$response['success'] = 1;
 			}
 			
-			/* Allowed actions for action menu */
-			$allowedActions = ['stockMovement' => 'Voorraadverplaatsing', 'test' => 'test'];
+			$this->set(compact('response'));
+			$this->viewBuilder()->setOption('serialize', true);
+			$this->RequestHandler->renderAs($this, 'json');
+		}
+	}
+	
+	/* Main function products core section */
+	public function initProductsCoreSection() {
+		if ($this->request->is('post')) {
+			$this->loadModel('Products');
 			
-			/* Reseting data array */
+			/* Retrieving products */
+			$products = $this->Products->find('all', [
+				'limit' => 10
+			]);
+			
+			/* Creating a list with the file formats */
+			$this->loadModel('FileFormats');
+			
+			$fileFormatsList = $this->FileFormats->find('list', ['keyField' => 'id', 'valueField' => 'name']);
+			
+			/* Resetting data array */
 			$data = [];
-				$data['product'] = $product;
-				$data['warehouses'] = $warehouses;
-				$data['warehousesList'] = $warehousesList;
-				$data['allowedActions'] = $allowedActions;
+				$data['products'] = $products;
+				$data['fileFormatsList'] = $fileFormatsList;
 			
 			$response = ['data' => $data];
 			

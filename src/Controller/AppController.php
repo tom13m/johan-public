@@ -37,8 +37,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    public function initialize(): void
-    {
+    public function initialize(): void {
         parent::initialize();
 
         $this->loadComponent('RequestHandler');
@@ -51,4 +50,14 @@ class AppController extends Controller
          */
         //$this->loadComponent('FormProtection');
     }
+	
+	public function writeBooking($bookingData) {
+		$this->loadModel('Bookings');
+		
+		$booking = $this->Bookings->newEmptyEntity();
+		
+		$booking = $this->Bookings->patchEntity($booking, $bookingData);
+
+		$this->Bookings->save($booking);
+	}
 }
