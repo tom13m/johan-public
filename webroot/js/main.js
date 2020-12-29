@@ -20,8 +20,10 @@ function processBarcode() {
 				/* Opening scan core section and setting data */
 				openCoreSection('scan', data);
 			}
+		} else if (coreSection == 'products') {
+			document.getElementById('productFormBarcode').value = barcode;
 		} else {
-
+			
 		}
 	}
 }
@@ -109,6 +111,8 @@ function moveProductStock() {
 
 	/* Getting form data */
 	let formData = serializeFormData(form);
+	
+	console.log(formData);
 
 	/* Moving product stock */
 	ajaxRequest('Products', 'moveProductStock', formData, processProductStockMove);
@@ -159,6 +163,11 @@ function editWarehouse() {
 	ajaxRequest('Warehouses', 'edit', formData, processWarehouseEdit);
 	
 	function processWarehouseEdit(data) {
+		console.log(data)
+		
+		/* Rerendering general content */
+		renderElement('coreSections_scanCoreSection_productGeneral', data, 'scanProductGeneralSection');
+		
 		/* Rerendering stock content */
 		renderElement('coreSections_scanCoreSection_productStock', data, 'scanProductStockSection');
 		

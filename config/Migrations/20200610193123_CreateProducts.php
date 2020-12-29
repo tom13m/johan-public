@@ -40,6 +40,11 @@ class CreateProducts extends AbstractMigration
 			'default' => null
 		]);
 		
+		$table->addColumn('standard', 'boolean', [
+			'null' => false,
+			'default' => false
+		]);
+		
         $table->create();
     }
 }

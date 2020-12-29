@@ -24,21 +24,19 @@ class SettingsController extends AppController {
 	}
 
 	public function setFileFormat() {
-
 		$this->loadModel('FileFormats');
 
 		$fileFormat = $this->FileFormats->newEmptyEntity();
 
-		$fileFormat->name = 'Plieger';
+		$fileFormat->name = 'Oosterberg';
 		/* Barcode positions are always minus one because of the default array structure */
-		$fileFormat->format = serialize(array('barcode' => 4, 'name' => 5, 'description' => 14));
+		$fileFormat->format = serialize(array('barcode' => 'Art. Nr.', 'name' => 'Omschrijving 1', 'description' => 'Omschrijving 2'));
 
 		if ($this->FileFormats->save($fileFormat)) {
 			return $this->redirect(['controller' => 'settings', 'action' => 'index']);
 		} else {
 			return $this->redirect(['controller' => 'settings', 'action' => 'index']);
 		}
-
 	}
 
 }

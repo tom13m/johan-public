@@ -35,7 +35,7 @@
 				Aantal:
 			</div>
 			<div class='col-md-5 offset-md-1'>
-				<?= $this->Form->control('amount', ['label' => false, 'id' => 'productStockCorrectionAmount', 'class' => 'numericalField productWarehouseNumericalField', 'type' => 'number']); ?>
+				<?= $this->Form->control('stock', ['label' => false, 'id' => 'productStockCorrectionAmount', 'class' => 'numericalField productWarehouseNumericalField', 'type' => 'number']); ?>
 			</div>
 		</div>
 		<div class="productStockBookingReason row">

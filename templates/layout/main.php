@@ -17,6 +17,8 @@
 		<?= $this->Html->script('popper.min.js') ?>
 		<?= $this->Html->script('quagga.min.js') ?>
 		<?= $this->Html->script('onscan.min.js') ?>
+		<?= $this->Html->script('jszip.js') ?>
+		<?= $this->Html->script('xlsx.js') ?>
 		<?= $this->Html->script('main.js') ?>
 		<?= $this->Html->script('generic.js') ?>
 		
@@ -58,7 +60,7 @@
     });
 		
 	/* Function for rendering an element */
-	function renderElement(element, data = null, id, callback) {
+	function renderElement(element, data = null, id, callback) {	
 		let path = "<?= $this->Url->Build(['controlller' => 'main', 'action' => 'renderElement']); ?>" + "/" + element;
 		
 		$('#' + id).load(path, {
@@ -86,6 +88,8 @@
 	
 	/* Function that creates an ajax request */
 	function ajaxRequest(controller, action, data = null, callback = null) {
+		console.log(data);
+		
 		$.ajax({
 			url : "<?=$this->Url->build(['controller' => '']);?>" + "/" + controller + "/" + action,
 			type : 'POST',
@@ -93,10 +97,10 @@
 				'data': data
 			},
 			dataType :'json',
-//			processData: false,
-//			contentType:'multipart/form-data',
 			success : function(dataArray) {    
 				let response = dataArray.response;
+				
+//				console.log(response);
 				
 				if (typeof response.data !== 'undefined') {
 					data = response.data;
@@ -122,45 +126,4 @@
 			}
 		});
 	}
-	
-	/* Function that creates an ajax request with file upload */
-	function ajaxRequestFile(controller, action, data = null, callback = null) {
-//		data = JSON.stringify(data);
-//		console.log(data)
-		data = {data};
-		
-		console.log(data)
-		
-		$.ajax({
-			url : "<?=$this->Url->build(['controller' => '']);?>" + "/" + controller + "/" + action,
-			type : 'POST',
-			data : {
-				'data': data
-			},
-			dataType :'json',
-//			processData: false,
-//			contentType: false,
-			success : function(dataArray) {  
-				console.log(dataArray)
-				let response = dataArray.response;
-				
-				if (typeof response.data !== 'undefined') {
-					data = response.data;
-				} else if (typeof response.success !== 'undefined') {
-					data = null;
-				}
-				
-				if (callback != null) {
-					callback(data);
-				}
-			},
-			error : function(request,error)
-			{
-				console.error("hier komt de error:")
-				console.log(request)
-				console.error(error);
-			}
-		});
-	}
-
 </script>

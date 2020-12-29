@@ -16,9 +16,9 @@ class CreateFileFormats extends AbstractMigration
     {
         $table = $this->table('file_formats');
 		
-		$table->addColumn('name', 'string', [
-			'null' => false,
-			'length' => 50,
+		$table->addColumn('supplier_id', 'integer', [
+			'null' => true,
+			'length' => 6,
 			'default' => null
 		]);
 		

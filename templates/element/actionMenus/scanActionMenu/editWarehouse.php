@@ -13,7 +13,7 @@
 				<div id="productCorrectionWarehouses">
 					<?php Foreach ($data['warehouses'] as $warehouse) { ?>
 
-					<div id="<?= 'productWarehouseOptionEdit' . $warehouse['id']; ?>" class="warehouseOption correction">
+					<div id="<?= 'productWarehouseOptionEdit' . $warehouse['id']; ?>" class="warehouseOption edit">
 						<div class="row">
 							<div class="col-md-12">
 								<i class="fas fa-shuttle-van"> </i>
@@ -29,6 +29,11 @@
 								<p> Maximale voorraad: </p>
 								<?= $this->Form->control('maximum_stock' . $warehouse['id'], ['id' => 'editWarehouseScanActionMenuMaximumStockField' . $warehouse['id'], 'label' => false, 
 																		   'class' => 'numericalField productWarehouseNumericalField', 'type' => 'number', 'value' => $warehouse['maximumStock']]); ?>
+							</div>
+							<div class="col-md-12">
+								<p> Voorraad: </p>
+								<?= $this->Form->control('product_stock' . $warehouse['id'], ['id' => 'editWarehouseScanActionMenuStockField' . $warehouse['id'], 'label' => false, 
+																		   'class' => 'numericalField productWarehouseNumericalField', 'type' => 'number', 'value' => $warehouse['productStock']]); ?>
 							</div>
 						</div>
 					</div>

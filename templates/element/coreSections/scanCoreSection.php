@@ -32,7 +32,7 @@
 		<div class="coreSectionContent row">
 			<div class="col-md-12">
 				<!-- General information -->
-				<span id="scanProductsGeneralSection">
+				<span id="scanProductGeneralSection">
 					<?= $this->Element('coreSections/scanCoreSection/productGeneral'); ?>
 				</span>
 				
@@ -71,10 +71,5 @@
 	</div>
 
 </div>
-
-<!-- Local Javascript functions (later to be transfered to a JS file) -->
-<script>
-
-</script>
 
 <?php } ?>

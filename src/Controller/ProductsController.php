@@ -124,15 +124,20 @@ class ProductsController extends AppController {
 			$this->loadModel('WarehousesProducts');
 
 			$warehouseProduct = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['warehouse_id'], 'product_id' => $data['product_id']])->first();
-
-			$warehouseProduct->stock = $warehouseProduct->stock + $data['amount'];
-		
+			
+			if ($warehouseProduct != null) {
+				$warehouseProduct->stock = $warehouseProduct->stock + $data['stock'];
+			} else {
+				$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
+				$warehouseProduct = $this->WarehousesProducts->patchEntity($warehouseProduct, $data);
+			}
+			
 			$this->WarehousesProducts->save($warehouseProduct);
 			
 			/* Write booking */
 			$bookingData = array(
 				'product_id' => $data['product_id'],
-				'amount' => $data['amount'],
+				'amount' => $data['stock'],
 				'from_location_id' => $data['warehouse_id'],
 				'booking_reason_id' => $data['booking_reason_id']
 			);
@@ -198,80 +203,153 @@ class ProductsController extends AppController {
 		$this->viewBuilder()->setOption('serialize', true);
 		$this->RequestHandler->renderAs($this, 'json');
 	}
+	
+	/* Temporary function for adding a new product */
+	public function addProduct() {
+		$response = [];
+		
+		if ($this->request->is('post')) {
+			$data = $this->request->getData('data');
+			
+			if (isset($data['barcode'])) {
+				$product = $this->Products->newEmptyEntity();
+				
+				$product = $this->Products->patchEntity($product, $data);
+				
+				$data = [];
+				
+				if ($this->Products->save($product)) {
+					$data['errorTemplate'] = 'success';
+				} else {
+					$data['errorTemplate'] = 'failure';
+				}
+			}
+			
+			$response['data'] = $data;
+		} else {
+			$data = [];
+			
+			$data['errorTemplate'] = 'failure';
+			
+			$response['data'] = $data;
+		}
+		
+		$this->set(compact('response'));
+		$this->viewBuilder()->setOption('serialize', true);
+		$this->RequestHandler->renderAs($this, 'json');
+	}
 
 	/* Function for importing products */
 	public function importProducts() {
-		$this->RequestHandler->renderAs($this, 'json');
-
 		$response = [];
 
 		if($this->request->is('post')) {
-			$data = $this->request->getData();
+			$data = $this->request->getData('data');
+			
+//			$test = $data['products_file'];
+			
+			/* Receiving file format */
+			$this->loadModel('FileFormats');
+							
+			$fileFormat = $this->FileFormats->findById($data['file_format_id'])->first();
+			$fileFormat->format = unserialize($fileFormat->format);
+			
+			/* Iterating through csv rows */
+			$productsFile = $data['products_file'];
+			
+			$productsArray = [];
+			
+			Foreach ($productsFile as $row) {
+//				array_push($productsArray, ['name' => $row[$fileFormat->format['name']], 'barcode' => $row[$fileFormat->format['barcode']], 'description' => $row[$fileFormat->format['description']]]);
+				if ($product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first()) {
+					// Patch existing entity
+					$product->name = $row[$fileFormat->format['name']];
+					$product->description = $row[$fileFormat->format['description']];
+					
+					$this->Products->save($product);
+				} else {
+					// Create new entity
+					if ($row[$fileFormat->format['barcode']] != '') {
+						$product = $this->Products->newEmptyEntity();
+
+						$product->barcode = $row[$fileFormat->format['barcode']];
+						$product->name = $row[$fileFormat->format['name']];
+						$product->description = $row[$fileFormat->format['description']];
+						$product->supplier_id = $fileFormat->supplier_id;
+
+						$this->Products->save($product);
+					}
+				}
+			}
+			
+//			$data['test'] = $fileFormat->format['barcode'];
+			
+//			$this->Products->saveMany($products);
 
 //			$test = $data['products_file'];
 
-			//			$file = $data['products_file'];
-			//			$filename = explode('.', $file['name']);
-
-			//			if (end($filename) == 'csv') {
-			//				$handle = fopen($file['tmp_name'], "r");
-			//				
-			//				/* Receiving file format */
-			//				$this->loadModel('FileFormats');
-			//				
-			//				$fileFormat = $this->FileFormats->findById($data['file_format_id'])->first();
-			//				$fileFormat->format = unserialize($fileFormat->format);
-			//				
-			//				/* Inserting or updating products */
-			//				$productList = [];
-			//				
-			//				while($row = fgetcsv($handle)) {
-			//					$row = str_replace('"', '', explode(',', implode($row)));
-			//					
-			//					// Check if barcode exists
-			//					if (isset($row[$fileFormat->format['barcode']])) {
-			//						// Check if exist in database, then patch or add depending on this
-			//						if ($product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first()) {
-			//							// Patch things
-			//							$product->name = $row[$fileFormat->format['name']];
-			//							$product->description = $row[$fileFormat->format['description']];
-			//							
-			//							if ($this->Products->save($product)) {
-			//								array_push($productList, $product->name);
-			//
-			//								continue;
-			//							} else {
-			//								// Patch to failure list
-			//
-			//								continue;
-			//							}
-			//						} else {
-			//							$product = $this->Products->newEmptyEntity();
-			//
-			//							$product->barcode = $row[$fileFormat->format['barcode']];
-			//							$product->name = $row[$fileFormat->format['name']];
-			//							$product->description = $row[$fileFormat->format['description']];
-			//
-			//							if ($this->Products->save($product)) {
-			//								array_push($productList, $product->name);
-			//
-			//								continue;
-			//							} else {
-			//								// Patch to failure list
-			//
-			//								continue;
-			//							}
-			//						}
-			//					} else {
-			//						
-			//					}
-			//				}
-			//				
-			//				fclose($handle);
-			//			}
+//						$file = $data['products_file'];
+//						$filename = explode('.', $file['name']);
+//
+//						if (end($filename) == 'csv') {
+//							$handle = fopen($file['tmp_name'], "r");
+//							
+//							/* Receiving file format */
+//							$this->loadModel('FileFormats');
+//							
+//							$fileFormat = $this->FileFormats->findById($data['file_format_id'])->first();
+//							$fileFormat->format = unserialize($fileFormat->format);
+//							
+//							/* Inserting or updating products */
+//							$productList = [];
+//							
+//							while($row = fgetcsv($handle)) {
+//								$row = str_replace('"', '', explode(',', implode($row)));
+//								
+//								// Check if barcode exists
+//								if (isset($row[$fileFormat->format['barcode']])) {
+//									// Check if exist in database, then patch or add depending on this
+//									if ($product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first()) {
+//										// Patch things
+//										$product->name = $row[$fileFormat->format['name']];
+//										$product->description = $row[$fileFormat->format['description']];
+//										
+//										if ($this->Products->save($product)) {
+//											array_push($productList, $product->name);
+//			
+//											continue;
+//										} else {
+//											// Patch to failure list
+//			
+//											continue;
+//										}
+//									} else {
+//										$product = $this->Products->newEmptyEntity();
+//			
+//										$product->barcode = $row[$fileFormat->format['barcode']];
+//										$product->name = $row[$fileFormat->format['name']];
+//										$product->description = $row[$fileFormat->format['description']];
+//			
+//										if ($this->Products->save($product)) {
+//											array_push($productList, $product->name);
+//			
+//											continue;
+//										} else {
+//											// Patch to failure list
+//			
+//											continue;
+//										}
+//									}
+//								} else {
+//									
+//								}
+//							}
+//							
+//							fclose($handle);
+//						}
 
 			//			$response['productList'] = $productList;
-			$response['test'] = $data;
+			$response['data'] = $data;
 		} else {
 			$response['success'] = 0;
 		}

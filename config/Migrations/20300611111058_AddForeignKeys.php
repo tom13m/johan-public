@@ -76,6 +76,12 @@ class AddForeignKeys extends AbstractMigration
 		$table->save();
 		
 		
+		/* File formats */
+		$table = $this->table('file_formats');
+		
+		$table->addForeignKey('supplier_id', 'suppliers', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
+		
+		
 		/* Combo tables */
 		
 		/* WarehousesProducts */

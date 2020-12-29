@@ -79,12 +79,15 @@ class MainController extends AppController {
 							$warehouse->productStock = $warehouse->products[0]->_joinData->stock;
 
 							$product->totalStock += $warehouse->productStock;
+							
+							$warehouse->minimumStock = $warehouse->products[0]->_joinData->minimum_stock;
+							$warehouse->maximumStock = $warehouse->products[0]->_joinData->maximum_stock;
 						} else {
 							$warehouse->productStock = 0;
+							
+							$warehouse->minimumStock = 0;
+							$warehouse->maximumStock = 0;
 						}
-
-						$warehouse->minimumStock = $warehouse->products[0]->_joinData->minimum_stock;
-						$warehouse->maximumStock = $warehouse->products[0]->_joinData->maximum_stock;
 
 						unset($warehouse->products);
 
@@ -98,9 +101,9 @@ class MainController extends AppController {
 
 					/* Allowed actions for action menu */
 					$allowedActions = [
+						'editWarehouse' => 'Wijzig magazijn',
 						'stockMovement' => 'Voorraadverplaatsing',
-						'stockCorrection' => 'Voorraadcorrectie',
-						'editWarehouse' => 'Wijzig magazijn'
+						'stockCorrection' => 'Voorraadcorrectie'
 					];
 
 					/* Resetting data array */
@@ -139,12 +142,23 @@ class MainController extends AppController {
 			/* Creating a list with the file formats */
 			$this->loadModel('FileFormats');
 			
-			$fileFormatsList = $this->FileFormats->find('list', ['keyField' => 'id', 'valueField' => 'name']);
+			$fileFormats = $this->FileFormats->find()->where(['FileFormats.supplier_id IS NOT' => null])->contain(['Suppliers']);
+			$fileFormatsList = [];
+			
+			Foreach ($fileFormats as $fileFormat) {
+				array_push($fileFormatsList, ['value' => $fileFormat->id, 'text' => $fileFormat->supplier->name]);
+			}
+			
+			/* Creating a list with the suppliers */
+			$this->loadModel('Suppliers');
+			
+			$suppliersList = $this->Suppliers->find('list', ['keyField' => 'id', 'valueField' => 'name']);
 			
 			/* Resetting data array */
 			$data = [];
 				$data['products'] = $products;
 				$data['fileFormatsList'] = $fileFormatsList;
+				$data['suppliersList'] = $suppliersList;
 			
 			$response = ['data' => $data];
 			

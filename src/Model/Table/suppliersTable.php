@@ -10,6 +10,7 @@ class SuppliersTable extends Table
     	$this->hasMany('Products');
 		
 		$this->hasOne('Locations');
+		$this->hasOne('FileFormats');
     }
 }
 
