@@ -241,8 +241,6 @@ class ProductsController extends AppController {
 
 	/* Function for importing products */
 	public function importProducts() {
-		$response = [];
-
 		if($this->request->is('post')) {
 			$data = $this->request->getData('data');
 			
@@ -349,14 +347,16 @@ class ProductsController extends AppController {
 //						}
 
 			//			$response['productList'] = $productList;
-			$response['data'] = $data;
+//			$response['data'] = $data;
 		} else {
+			$response = [];
+			
 			$response['success'] = 0;
+			
+			$this->set(compact('response'));
+			$this->viewBuilder()->setOption('serialize', true);
+			$this->RequestHandler->renderAs($this, 'json');
 		}
-
-		$this->set(compact('response'));
-		$this->viewBuilder()->setOption('serialize', true);
-		$this->RequestHandler->renderAs($this, 'json');
 	}
 }
 

@@ -18,6 +18,8 @@ onScan.attachTo(document, {
 
 /* Function for starting the camera barcode scanner */
 function startBarcodeScanner() {
+		document.getElementById('barcodeScannerCameraTarget').classList.add('active');
+	
 		/* Setting up Quagga Js barcode scanner */
 		Quagga.init({
 			inputStream : {
@@ -55,6 +57,8 @@ function startBarcodeScanner() {
 	
 /* Function for stopping the camera barcode scanner */
 function stopBarcodeScanner() {
+	document.getElementById('barcodeScannerCameraTarget').classList.remove('active');
+	
 	Quagga.stop();
 	toggleCameraSection('hide');
 	

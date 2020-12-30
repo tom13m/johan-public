@@ -49,6 +49,27 @@ html, body, .content {
 	margin: 2% 0px 0px 0px;
 }
 
+.cameraMode {
+	display: none;
+}
+
+.cameraMode.active {
+	display: block;
+}
+
+.cameraIcon {
+	font-size: 35px;
+	margin: 10px 0px 0px 0px;
+}
+
+.barcodeScannerCameraSection {
+	display: none;
+}
+
+.barcodeScannerCameraSection.active {
+	display: block;
+}
+
 
 /* Main Menu */
 .mainMenuMobile {

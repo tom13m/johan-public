@@ -49,8 +49,12 @@
 				<div class="col-8">
 					<input type="text" id="barcodeTarget" class="barcodeScanField col-10", autocomplete="off">
 				</div>
-				<div clas="col-2">
-					<button type="button" id="barcodeTargetButton" class="barcodeSubmissionButton col-2" onclick="processBarcode(this.value)"> <i class="fas fa-chevron-right"> </i> </button>
+				
+				<div id="cameraModeOn" class="col-2 cameraMode active" onclick="startBarcodeScanner(); setActive('cameraMode', 'cameraModeOff');">
+					<i class="cameraIcon fas fa-camera"> </i>
+				</div>
+				<div id="cameraModeOff" class="col-2 cameraMode" onclick="stopBarcodeScanner(); setActive('cameraMode', 'cameraModeOn');">
+					<i class="cameraIcon fas fa-times"> </i>
 				</div>
 			</div>
 		</section>
