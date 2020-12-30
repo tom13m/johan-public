@@ -56,6 +56,8 @@
 				<div id="cameraModeOff" class="col-2 cameraMode" onclick="stopBarcodeScanner(); setActive('cameraMode', 'cameraModeOn');">
 					<i class="cameraIcon fas fa-times"> </i>
 				</div>
+				
+				<button type="button" id="barcodeTargetButton" style="display: none;" onclick="processBarcode()"> <i class="fas fa-chevron-right"> </i> </button>
 			</div>
 		</section>
 	</body>

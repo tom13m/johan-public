@@ -47,9 +47,15 @@ function startBarcodeScanner() {
 			Quagga.stop();
 			toggleCameraSection('hide');
 			
+			if (mobile = true) {
+				setActive('cameraMode', 'cameraModeOn');
+			}
+			
 			let barcodeTarget = document.getElementById('barcodeTarget');
 
 			barcodeTarget.value = result.codeResult.code;
+			
+			document.getElementById('barcodeTargetButton').click();
 			
 			Quagga.offDetected();
 		});
