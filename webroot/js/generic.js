@@ -181,7 +181,7 @@ function giveError(errorTemplate) {
 		
 		setTimeout(function() {
 			errorTemplate.classList.remove('active');
-		}, 6000);
+		}, 2000);
 	}
 }
 
