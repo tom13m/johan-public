@@ -51,10 +51,10 @@ function openCoreSection(section = null, data = null) {
 
 			renderElement(elementPath, data, elementId);
 		}
-		
+
 		/* Closing main menu */
 		let mainMenu = document.getElementById('mainMenuMobile');
-		
+
 		if (mainMenu.classList.contains('active')) {
 			toggleMenu('mainMenuMobile');
 		}
@@ -89,20 +89,20 @@ function switchProductWarehouse(warehouseId, action) {
 /* Function for editing a warehouse */
 function editWarehouse() {
 	let form = document.getElementById('editWarehouseScanActionMenuForm');
-	
+
 	/* Getting form data */
 	let formData = serializeFormData(form);
-	
+
 	/* Editing warehouse */
 	ajaxRequest('Warehouses', 'edit', formData, processWarehouseEdit);
-	
+
 	function processWarehouseEdit(data) {
 		/* Rerendering general content */
 		renderElement('coreSections_mobile_scanCoreSection_productGeneral', data, 'scanProductGeneralSection');
-		
+
 		/* Rerendering stock content */
 		renderElement('coreSections_mobile_scanCoreSection_productStock', data, 'scanProductStockSection');
-		
+
 		/* Rerendering stock content */
 		renderElement('coreSections_mobile_scanCoreSection_tempo', data, 'scanProductTempoSection');
 	}
@@ -115,7 +115,7 @@ function editWarehouse() {
 function bindEventListeners() {
 	// Barcode target field
 	let barcodeTarget = document.getElementById('barcodeTarget');
-	
+
 	barcodeTarget.addEventListener('keyup', function(event) {
 		if (event.keyCode === 13) {
 			document.getElementById('barcodeTargetButton').click();
@@ -133,8 +133,8 @@ $( window ).on( "load", function() {
 	// If coresection param is set then open that coresection
 	if (getParamVariable('coreSection') != false) {
 		openCoreSection(getParamVariable('coreSection'));
-		
-//		let menuBlock = getParamVariable('coreSection') + 'MenuRow';
-//		setActive('menuRow', menuRow);
+
+		//		let menuBlock = getParamVariable('coreSection') + 'MenuRow';
+		//		setActive('menuRow', menuRow);
 	}
 })

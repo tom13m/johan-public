@@ -105,6 +105,11 @@ class MainController extends AppController {
 						'stockMovement' => 'Voorraadverplaatsing',
 						'stockCorrection' => 'Voorraadcorrectie'
 					];
+					
+					/* Temporary */
+					$this->loadModel('Suppliers');
+					
+					$suppliersList = $this->Suppliers->find('list', ['keyField' => 'id', 'valueField' => 'name']);
 
 					/* Resetting data array */
 					$data = [];
@@ -113,6 +118,7 @@ class MainController extends AppController {
 						$data['warehousesList'] = $warehousesList;
 						$data['bookingReasonsList'] = $bookingReasonsList;
 						$data['allowedActions'] = $allowedActions;
+						$data['suppliersList'] = $suppliersList;
 
 					$response = ['data' => $data];
 				} else {

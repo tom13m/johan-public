@@ -57,4 +57,6 @@
 	</div>
 
 	<?= $this->Form->control('product_id', ['type' => 'hidden', 'id' => 'productEditWarehouseProductId', 'value' => $data['product']['id']]); ?>
+	
+	<?= $this->Form->end(); ?>
 </div>

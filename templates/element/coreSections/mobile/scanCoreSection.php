@@ -46,6 +46,11 @@
 						<span id="scanProductTempoSection">
 							<?= $this->Element('coreSections/mobile/scanCoreSection/tempo'); ?>
 						</span>
+						
+						<!-- Temporary -->
+						<span id="scanProductTempo2Section">
+							<?= $this->Element('coreSections/mobile/scanCoreSection/tempo2'); ?>
+						</span>
 					</div>
 				</div>
 			</div>
