@@ -28,6 +28,12 @@ class CreateFileFormats extends AbstractMigration
 			'default' => null
 		]);
 		
+		$table->addColumn('file_extension', 'string', [
+			'null' => false,
+			'length' => 10,
+			'default' => null
+		]);
+		
         $table->create();
     }
 }

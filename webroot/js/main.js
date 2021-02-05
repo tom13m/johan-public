@@ -22,8 +22,10 @@ function processBarcode() {
 			}
 		} else if (coreSection == 'products') {
 			document.getElementById('productFormBarcode').value = barcode;
+		} else if (coreSection == 'stocktaking') {
+			addStocktakingProduct(barcode);
 		} else {
-			
+				   
 		}
 	}
 }
@@ -111,8 +113,6 @@ function moveProductStock() {
 
 	/* Getting form data */
 	let formData = serializeFormData(form);
-	
-	console.log(formData);
 
 	/* Moving product stock */
 	ajaxRequest('Products', 'moveProductStock', formData, processProductStockMove);
@@ -162,9 +162,7 @@ function editWarehouse() {
 	/* Editing warehouse */
 	ajaxRequest('Warehouses', 'edit', formData, processWarehouseEdit);
 	
-	function processWarehouseEdit(data) {
-		console.log(data)
-		
+	function processWarehouseEdit(data) {	
 		/* Rerendering general content */
 		renderElement('coreSections_scanCoreSection_productGeneral', data, 'scanProductGeneralSection');
 		

@@ -9,6 +9,11 @@
 		Producten
 	</div>
 </div>
+<div class="menuRow row" id="stocktakingMenuRow" onclick="openCoreSection('stocktaking')">
+	<div class="menuItem">
+		Inventarisatie
+	</div>
+</div>
 <div class="menuRow row" id="logoffMenuRow" onclick="redirect('<?= $this->Url->Build(['controller' => 'users', 'action' => 'logout']); ?>')">
 	<div class="menuItem">
 		Log-out

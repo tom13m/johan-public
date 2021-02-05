@@ -30,7 +30,8 @@ class SettingsController extends AppController {
 
 		$fileFormat->name = 'Oosterberg';
 		/* Barcode positions are always minus one because of the default array structure */
-		$fileFormat->format = serialize(array('barcode' => 'Art. Nr.', 'name' => 'Omschrijving 1', 'description' => 'Omschrijving 2'));
+		$fileFormat->format = serialize(array('barcode' => 0, 'name' => 1, 'description' => 2));
+		$fileFormat->file_extension = '.xlsx';
 
 		if ($this->FileFormats->save($fileFormat)) {
 			return $this->redirect(['controller' => 'settings', 'action' => 'index']);

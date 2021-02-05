@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use SimpleXLSX;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class ProductsController extends AppController {
 
@@ -10,6 +13,36 @@ class ProductsController extends AppController {
 		parent::initialize();
 
 		$this->viewBuilder()->setLayout('main');
+	}
+	
+	/* Function for receiving general product information */
+	public function getProductData() {
+		if ($this->request->is('post')) {
+			$response = [];
+			
+			$data = $this->request->getData('data');
+			
+			if ($data['barcode'] != false) {
+				$product = $this->Products->findByBarcode($data['barcode'])->first();
+			} elseif ($data['product_id'] != false) {
+				$product = $this->Products->findById($data['product_id'])->first();
+			}
+			
+			/* Creating booking reasons list */
+			$this->loadModel('BookingReasons');
+			
+			$bookingReasonsList = $this->BookingReasons->find('list', ['keyField' => 'id', 'valueField' => 'name']);
+			
+			$data = [];
+				$data['product'] = $product;
+				$data['bookingReasonsList'] = $bookingReasonsList;
+			
+			$response['data'] = $data;
+			
+			$this->set(compact('response'));
+			$this->viewBuilder()->setOption('serialize', true);
+			$this->RequestHandler->renderAs($this, 'json');
+		}
 	}
 
 	/* Function for moving product stock */
@@ -96,10 +129,10 @@ class ProductsController extends AppController {
 			$bookingReasonsList = $this->BookingReasons->find('list', ['keyField' => 'id', 'valueField' => 'name']);
 
 			$data = [];
-			$data['warehouses'] = $warehouses;
-			$data['warehousesList'] = $warehousesList;
-			$data['product']['id'] = $productId;
-			$data['bookingReasonsList'] = $bookingReasonsList;
+				$data['warehouses'] = $warehouses;
+				$data['warehousesList'] = $warehousesList;
+				$data['product']['id'] = $productId;
+				$data['bookingReasonsList'] = $bookingReasonsList;
 
 			$response['data'] = $data;
 		} else {
@@ -113,8 +146,6 @@ class ProductsController extends AppController {
 
 	/* Function for correcting product stock */
 	public function correctProductStock() {
-		$this->RequestHandler->renderAs($this, 'json');
-
 		$response = [];
 
 		if ($this->request->is('post')) {
@@ -199,6 +230,23 @@ class ProductsController extends AppController {
 			$response['success'] = 0;
 		}
 
+		$this->set(compact('response'));
+		$this->viewBuilder()->setOption('serialize', true);
+		$this->RequestHandler->renderAs($this, 'json');
+	}
+	
+	/* Function for saving a temporary product set */
+	public function saveProductsSet() {
+		$response = [];
+
+		if ($this->request->is('post')) {
+			$data = $this->request->getData('data');
+			
+			
+		} else {
+			$response['success'] = 0;
+		}
+		
 		$this->set(compact('response'));
 		$this->viewBuilder()->setOption('serialize', true);
 		$this->RequestHandler->renderAs($this, 'json');
@@ -379,6 +427,177 @@ class ProductsController extends AppController {
 		$this->set(compact('response'));
 		$this->viewBuilder()->setOption('serialize', true);
 		$this->RequestHandler->renderAs($this, 'json');
+	}
+
+	/* Function for handling updated product data */
+	public function updateProducts() {
+		/* Findind file format */
+		$this->loadModel('FileFormats');
+
+		$fileFormat = $this->FileFormats->findById('4')->contain(['Suppliers'])->first();
+		$fileFormat->format = unserialize($fileFormat->format);
+
+		/* Finding existing products by supplier and producing an array */
+		$products = $this->Products->findBySupplierId($fileFormat->supplier_id)->select(['barcode']);
+		$productsArray = [];
+
+		Foreach ($products as $product) {
+			array_push($productsArray, $product->barcode);
+		}
+
+		/* Reading file */
+		if ($fileFormat->file_extension == '.csv') {
+			$filePath = WWW_ROOT .'product_data'. DS . $fileFormat->supplier['name'] . '.csv';
+			$file = fopen($filePath, "r");
+
+			/* Cheking if product is in csv, if so update and remove from productsarray */
+			while (($row = fgetcsv($file)) !== FALSE) {
+				if (!(count($row) > 1)) {
+					$row = str_replace('"', '', explode(',', implode($row)));
+				}
+				
+				$row[$fileFormat->format['barcode']] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$fileFormat->format['barcode']]);;
+
+				if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
+					/* Update product entity */
+					$product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first();
+					
+					$product->name = $row[$fileFormat->format['name']];
+					$product->description = $row[$fileFormat->format['description']];
+
+					if ($this->Products->save($product)) {
+						$key = array_search($product->barcode, $productsArray);
+
+						unset($productsArray[$key]);
+					} else {
+						continue;
+					}
+				} else {
+					continue;
+				}
+			}
+
+			fclose($file);
+//		} elseif ($fileFormat->file_extension == '.xlsx') {
+//			$filePath = WWW_ROOT .'product_data'. DS . $fileFormat->supplier['name'] . '_test.xlsx';
+//
+//			$reader = ReaderEntityFactory::createXLSXReader();
+//
+//			$reader->open($filePath);
+//
+//			foreach ($reader->getSheetIterator() as $sheet) {
+//				foreach ($sheet->getRowIterator() as $xlsxRow) {
+//					// do stuff with the row
+//					$row = $xlsxRow->getCells();
+//					
+//					debug($row);
+
+//					$standardLength = 0;
+//					$barcodeLength = floor(log10(intval($row[$fileFormat->format['barcode']]->getValue())) + 1);
+//
+//					switch ($fileFormat->supplier->name) {
+//						case 'Oosterberg': 
+//							$standardLength = 8;
+//					}
+//
+//					if ($barcodeLength < $standardLength) {
+//						$difference = $standardLength - $barcodeLength;
+//
+//						$row[$fileFormat->format['barcode']] = strval($row[$fileFormat->format['barcode']]);
+//
+//						for ($i = 0; $i < $difference; $i++) {
+//							$row[$fileFormat->format['barcode']] = '0' . $row[$fileFormat->format['barcode']];
+//						}
+//					}
+//
+//					if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
+//						/* Update product entity */
+//						$product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first();
+//
+//						$product->name = $row[$fileFormat->format['name']];
+//						$product->description = $row[$fileFormat->format['description']];
+//
+//						if ($this->Products->save($product)) {
+//							$key = array_search($product->barcode, $productsArray);
+//
+//							unset($productsArray[$key]);
+//						} else {
+//							continue;
+//						}
+//					} else {
+//						continue;
+//					}
+//				}
+//			}
+
+//			$reader->close();
+
+			//			$xlsx = SimpleXLSX::parse($filePath);
+
+			//			Foreach (array_slice($xlsx->rows(), 1) as $row) {
+			//				$standardLength = 0;
+			//				$barcodeLength = floor(log10($row[$fileFormat->format['barcode']]) + 1);
+			//
+			//				switch ($fileFormat->supplier->name) {
+			//					case 'Oosterberg': 
+			//						$standardLength = 8;
+			//				}
+			//
+			//				if ($barcodeLength < $standardLength) {
+			//					$difference = $standardLength - $barcodeLength;
+			//					
+			//					$row[$fileFormat->format['barcode']] = strval($row[$fileFormat->format['barcode']]);
+			//					
+			//					for ($i = 0; $i < $difference; $i++) {
+			//						$row[$fileFormat->format['barcode']] = '0' . $row[$fileFormat->format['barcode']];
+			//					}
+			//				}
+			//
+			//				if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
+			//					/* Update product entity */
+			//					$product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first();
+			//
+			//					$product->name = $row[$fileFormat->format['name']];
+			//					$product->description = $row[$fileFormat->format['description']];
+			//
+			//					if ($this->Products->save($product)) {
+			//						$key = array_search($product->barcode, $productsArray);
+			//
+			//						unset($productsArray[$key]);
+			//					} else {
+			//						continue;
+			//					}
+			//				} else {
+			//					continue;
+			//				}
+			//			}
+
+
+			//
+			//			$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+			//
+			//			$spreadsheet = $reader->load($filePath);
+			//			$worksheet = $spreadsheet->getActiveSheet();
+			//
+			//			$i = 1;
+			//			
+			//			$array = $worksheet->toArray(null, true, true, true);
+
+			//			Foreach ($worksheet->getRowIterator() as $row) {
+			//				$cellValue = $worksheet->getCellByColumnAndRow(1, $i)->getValue();
+			//				
+			//				debug($cellValue);
+			//				
+			//				break;
+			////				Foreach ($row->getCellIterator() as $cell) {
+			////					if (in_array($row[], $productsArray)) {
+			////						
+			////					}
+			////				}	
+			//				
+			//				$i++;
+			//			}
+		}
 	}
 }
 

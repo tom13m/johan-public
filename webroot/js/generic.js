@@ -132,7 +132,17 @@ function serializeFormData(form) {
 //		data = formData;
 		
 		$.each($(form).serializeArray(), function() {
-			data[this.name] = this.value;
+			if (this.name.includes('[]')) {
+				if (typeof data[this.name] === 'undefined') {
+					data[this.name] = [];
+					
+					data[this.name].push(this.value);
+				} else {
+					data[this.name].push(this.value);
+				}
+			} else {
+				data[this.name] = this.value;
+			}
 		});
 		
 //		console.log(data);
@@ -164,6 +174,18 @@ function setActive(c, id) {
 	});
 	
 	active.classList.add('active');
+}
+
+/* Function for generating a random key */
+function randomKey(length) {
+    let randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+	
+    for (let i = 0; i < length; i++ ) {
+        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    
+	return result;
 }
 
 /* Function for giving an error message */

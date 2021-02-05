@@ -6,11 +6,14 @@
     "license": "MIT",
     "require": {
         "php": ">=7.2",
+        "box/spout": "^3.1",
         "cakephp/authentication": "2.0",
         "cakephp/cakephp": "^4.0",
         "cakephp/migrations": "^3.0@beta",
         "cakephp/plugin-installer": "^1.2",
-        "mobiledetect/mobiledetectlib": "^2.8"
+        "mobiledetect/mobiledetectlib": "^2.8",
+        "phpoffice/phpspreadsheet": "^1.16",
+        "shuchkin/simplexlsx": "^0.8.19"
     },
     "require-dev": {
         "cakephp/bake": "^2.0.3",

@@ -174,6 +174,26 @@ class MainController extends AppController {
 		}
 	}
 	
+	/* Main function stocktaking core section */
+	public function initStocktakingCoreSection() {
+		if ($this->request->is('post')) {
+			/* Creating the warehouses list */
+			$this->loadModel('Warehouses');
+			
+			$warehousesList = $this->Warehouses->find('list', ['keyField' => 'id', 'valueField' => 'name']);
+			
+			/* Resetting data array */
+			$data = [];
+				$data['warehousesList'] = $warehousesList;
+			
+			$response = ['data' => $data];
+			
+			$this->set(compact('response'));
+			$this->viewBuilder()->setOption('serialize', true);
+			$this->RequestHandler->renderAs($this, 'json');
+		}
+	}
+	
 }
 
 ?>

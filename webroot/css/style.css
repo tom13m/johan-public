@@ -21,6 +21,10 @@ form {
 	display: none;
 }
 
+.fullHeight {
+	height: 100%;
+}
+
 .contentBody {
 	background-color: whitesmoke;
 	padding: 0 !important;
@@ -49,7 +53,6 @@ form {
 
 .menuRow:hover {
 	background-color: var(--main-color);
-
 }
 
 .menuRow.active {
@@ -136,8 +139,10 @@ form {
 }
 
 .coreSectionContent {
-	overflow-y: auto;
+	overflow-y: hidden;
 	overflow-x: hidden;
+	padding: 2% 30px 0px 30px;
+	height: calc(98% - 50px);
 }
 
 .topBar {
@@ -175,7 +180,6 @@ form {
 
 /* General product information */
 .scanProductGeneralDiv {
-	padding: 2% 3% 0px 3%;
 	height: auto;
 }
 
@@ -185,7 +189,7 @@ form {
 }
 
 .productStockDiv {
-	padding: 0px 3% 0px 3%;
+	
 }
 
 .productStockDivTitle {
@@ -205,8 +209,8 @@ form {
 
 .productStockDivWarehouseTitle {
 	font-size: 17px;
-	overflow:hidden; 
-    white-space:nowrap; 
+	overflow: hidden; 
+    white-space: nowrap; 
 	text-overflow: ellipsis;
 }
 
@@ -214,6 +218,112 @@ form {
 	font-size: 25px;
 }
 
+
+/* \\\\\\\\ Stocktaking Core Section //////// */
+.stocktakingHead {
+	background-color: var(--main-color);
+}
+
+.stocktakingTitleHead {
+	height: 40px;
+	line-height: 40px;
+}
+
+.stocktakingSpecHead {
+	background-color: var(--patent-color);
+	height: 25px;
+}
+
+.stocktakingSaveIcon {
+	color: white;
+}
+
+.stocktakingProductsBody {
+	background-color: white;
+	height: 500px;
+	overflow: auto;
+}
+
+.stocktakingProductRow {
+	height: 40px;
+	line-height: 40px;
+	border: 1px solid var(--patent-color);
+	background-color: white;
+}
+
+.stocktakingProductNameField {
+	overflow: hidden; 
+    white-space: nowrap; 
+	text-overflow: ellipsis;
+}
+
+.stockTakingProductAmountField {
+	width: 40%;
+	height: 100%;
+}
+
+.stocktakingOptionBlock {
+	
+}
+
+.stocktakingOptionsHead {
+	margin-top: 40px;
+	height: 40px;
+}
+
+.stocktakingHeadOption {
+	background-color: var(--patent-color);
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	text-align: center;
+	font-size: 14px;
+	line-height: 40px;
+	cursor: pointer;
+}
+
+.stocktakingHeadOption.active {
+	background-color: var(--main-color);
+}
+
+.stocktakingOptionsBody {
+	height: 435px;
+	background-color: white;
+	padding-top: 3%;
+}
+
+.stocktakingSubBlock {
+	display: none !important;
+}
+
+.stocktakingSubBlock.active {
+	display: block !important;
+}
+
+.stocktakingOptionsRow {
+	padding: 0px 0px 5% 0px;
+	border-bottom: 1px solid var(--patent-color);
+}
+
+.stocktakingOption {
+	height: 50px;
+	font-size: 25px;
+	color: #333333;
+	line-height: 50px;
+	text-align: center;
+	border: 1px solid #333333;
+}
+
+.stocktakingOption.active {
+	border: 3px solid var(--main-color);
+}
+
+.stocktakingOptionSubSection {
+	display: none !important;
+}
+
+.stocktakingOptionSubSection.active {
+	display: block !important;
+}
 
 /* |||||||||| Action Menus |||||||||| */
 

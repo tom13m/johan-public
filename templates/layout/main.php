@@ -72,6 +72,26 @@
 		});
 	}
 	
+	/* Function for rendering an element (prepend) */
+	function renderElementPrepend(element, data = null, id, callback) {
+		let path = "<?= $this->Url->Build(['controlller' => 'main', 'action' => 'renderElement']); ?>" + "/" + element;
+		
+		$('#' + id).prepend($('<span>').load(path, {
+			data: data
+		}, function(i) {	
+			let prepended = document.getElementsByClassName('prepended');
+			
+			$(prepended).each(function(i, p) {
+				$(p).unwrap();
+				p.classList.remove('prepended');
+			})
+			
+			if (callback != null) {
+				callback();
+			}
+		}));
+	}
+	
 	function appendParamVariables(data = null) {
 		let urlVariables = '?';
 		
@@ -88,8 +108,6 @@
 	
 	/* Function that creates an ajax request */
 	function ajaxRequest(controller, action, data = null, callback = null) {
-		console.log(data);
-		
 		$.ajax({
 			url : "<?=$this->Url->build(['controller' => '']);?>" + "/" + controller + "/" + action,
 			type : 'POST',
