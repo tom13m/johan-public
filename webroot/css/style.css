@@ -251,6 +251,11 @@ form {
 	background-color: white;
 }
 
+.stocktakingProductRow.success {
+	background-color: var(--main-color);
+	color: white;
+}
+
 .stocktakingProductNameField {
 	overflow: hidden; 
     white-space: nowrap; 
@@ -323,6 +328,13 @@ form {
 
 .stocktakingOptionSubSection.active {
 	display: block !important;
+}
+
+.stocktakingSubmitSection {
+	background-color: var(--main-color);
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
 }
 
 /* |||||||||| Action Menus |||||||||| */

@@ -70,7 +70,7 @@
 								<div id="stocktakingOptions" class="stocktakingSubBlock active row">
 									<div class="col-md-12">
 										<?= $this->Form->create(null, ['id' => 'stocktakingFormOptions']); ?>
-										
+
 										<div class="stocktakingOptionsRow row">
 											<div id="stocktakingSubCorrection" class="stocktakingOption active col-md-3 offset-md-2" onclick="switchStocktakingSubOption('correction')">
 												<i class="fas fa-trash"> </i>
@@ -78,48 +78,54 @@
 											<div id="stocktakingSubMovement" class="stocktakingOption col-md-3 offset-md-1" onclick="switchStocktakingSubOption('movement')">
 												<i class="fas fa-shuttle-van"> </i>
 											</div>
-											
-											<?= $this->Form->hidden('stocktakingOption', ['value' => 'stockCorrection']); ?>
+
+											<?= $this->Form->hidden('stocktakingOption', ['id' => 'stocktakingOption', 'value' => 'correction']); ?>
 										</div>
-										
+
 										<div id="stocktakingStockCorrection" class="stocktakingOptionSubSection active row">
 											<div class="col-md-12">
 												<div class="row">
 													<div class="col-md-10 offset-md-1">
 														<p> Magazijn: </p>
-														
+
 														<?= $this->Form->control('warehouse_id', ['label' => false, 'options' => $data['warehousesList']]); ?>
 													</div>
 												</div>
 											</div>
 										</div>
-										
+
 										<div id="stocktakingStockMovement" class="stocktakingOptionSubSection row">
 											<div class="col-md-12">
 												<div class="row">
 													<div class="col-md-10 offset-md-1">
 														<p> Van magazijn: </p>
-														
-														<?= $this->Form->control('warehouse_from_id', ['label' => false, 'options' => $data['warehousesList']]); ?>
+
+														<?= $this->Form->control('from_warehouse_id', ['label' => false, 'options' => $data['warehousesList']]); ?>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-md-10 offset-md-1">
 														<p> Naar magazijn: </p>
-														
-														<?= $this->Form->control('warehouse_to_id', ['label' => false, 'options' => $data['warehousesList']]); ?>
+
+														<?= $this->Form->control('to_warehouse_id', ['label' => false, 'options' => $data['warehousesList']]); ?>
 													</div>
 												</div>
 											</div>
 										</div>
-										
+
 										<?= $this->Form->end(); ?>
 									</div>
 								</div>
-								
+
 								<div id="stocktakingSaves" class="stocktakingSubBlock row">
-								
+
 								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="stocktakingSubmitSection col-md-10 offset-md-1" onclick="executeStocktaking()">
+								<p> Uitvoeren </p>
 							</div>
 						</div>
 					</div>
@@ -132,6 +138,37 @@
 
 <!-- Temporary scripts for testing -->
 <script>
+
+	/* Function for executing a stocktaking */
+	function executeStocktaking() {
+		let productsForm = document.getElementById('stocktakingFormProducts');
+		let optionsForm = document.getElementById('stocktakingFormOptions');
+
+		let formData = serializeFormData([productsForm, optionsForm]);
+		let formOption = formData['stocktakingOption'];
+
+		if (formOption == 'correction') {
+			ajaxRequest('Products', 'correctProductsStocks', formData, process);
+		} else if (formOption == 'movement') {
+			ajaxRequest('Products', 'moveProductsStocks', formData, process);
+		}
+
+		function process(data) {
+			/* Resetting products body and indicating success */
+			let productsBody = document.getElementById('stocktakingProductsBody');
+
+			$(productsBody).empty();
+
+			let elementPath = 'coreSections_stocktakingCoreSection_successRow';
+			let elementId = 'stocktakingProductsBody';
+
+			renderElementPrepend(elementPath, data, elementId);
+
+			setTimeout(function() {
+				$(productsBody).empty();
+			}, 2000);
+		}
+	}
 
 	/* Function for adding a product to the stocktaking section */
 	function addStocktakingProduct(barcode = null) {
@@ -160,19 +197,22 @@
 
 
 	}
-	
+
 	function switchStocktakingHeadOption(headOption) {
 		/* Setting actives */
 		setActive('stocktakingHeadOption', 'stocktakingHead' + capitalize(headOption));
-		
+
 		setActive('stocktakingSubBlock', 'stocktaking' + capitalize(headOption));
 	}
-	
+
 	function switchStocktakingSubOption(subOption) {
 		/* Setting actives */
 		setActive('stocktakingOption', 'stocktakingSub' + capitalize(subOption));
-		
+
 		setActive('stocktakingOptionSubSection', 'stocktakingStock' + capitalize(subOption));
+
+		/* Set form option value */
+		document.getElementById('stocktakingOption').value = subOption;
 	}
 
 </script>

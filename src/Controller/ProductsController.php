@@ -14,41 +14,39 @@ class ProductsController extends AppController {
 
 		$this->viewBuilder()->setLayout('main');
 	}
-	
+
 	/* Function for receiving general product information */
 	public function getProductData() {
 		if ($this->request->is('post')) {
 			$response = [];
-			
+
 			$data = $this->request->getData('data');
-			
+
 			if ($data['barcode'] != false) {
 				$product = $this->Products->findByBarcode($data['barcode'])->first();
 			} elseif ($data['product_id'] != false) {
 				$product = $this->Products->findById($data['product_id'])->first();
 			}
-			
+
 			/* Creating booking reasons list */
 			$this->loadModel('BookingReasons');
-			
+
 			$bookingReasonsList = $this->BookingReasons->find('list', ['keyField' => 'id', 'valueField' => 'name']);
-			
+
 			$data = [];
-				$data['product'] = $product;
-				$data['bookingReasonsList'] = $bookingReasonsList;
-			
+			$data['product'] = $product;
+			$data['bookingReasonsList'] = $bookingReasonsList;
+
 			$response['data'] = $data;
-			
+
 			$this->set(compact('response'));
 			$this->viewBuilder()->setOption('serialize', true);
 			$this->RequestHandler->renderAs($this, 'json');
 		}
 	}
 
-	/* Function for moving product stock */
+	/* Function for moving a single product stock */
 	public function moveProductStock() {
-		$this->RequestHandler->renderAs($this, 'json');
-
 		$response = [];
 
 		if ($this->request->is('post')) {
@@ -56,6 +54,7 @@ class ProductsController extends AppController {
 			$productId = $data['product_id'];
 
 			$this->loadModel('WarehousesProducts');
+			$this->loadModel('Warehouses');
 
 			$fromWarehouse = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['from_warehouse_id'], 'product_id' => $data['product_id']])->first();
 			$toWarehouse = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['to_warehouse_id'], 'product_id' => $data['product_id']])->first();
@@ -91,11 +90,13 @@ class ProductsController extends AppController {
 			}
 
 			/* Write booking */
+			
+			
 			$bookingData = array(
 				'product_id' => $data['product_id'],
 				'amount' => $data['amount'],
-				'from_location_id' => $data['from_warehouse_id'],
-				'to_location_id' => $data['to_warehouse_id']
+				'from_location_id' => $this->Warehouses->findById($data['from_warehouse_id'])->first()->location_id,
+				'to_location_id' => $this->Warehouses->findById($data['to_warehouse_id'])->first()->location_id,
 			);
 
 			$this->writeBooking($bookingData);
@@ -129,10 +130,10 @@ class ProductsController extends AppController {
 			$bookingReasonsList = $this->BookingReasons->find('list', ['keyField' => 'id', 'valueField' => 'name']);
 
 			$data = [];
-				$data['warehouses'] = $warehouses;
-				$data['warehousesList'] = $warehousesList;
-				$data['product']['id'] = $productId;
-				$data['bookingReasonsList'] = $bookingReasonsList;
+			$data['warehouses'] = $warehouses;
+			$data['warehousesList'] = $warehousesList;
+			$data['product']['id'] = $productId;
+			$data['bookingReasonsList'] = $bookingReasonsList;
 
 			$response['data'] = $data;
 		} else {
@@ -144,7 +145,76 @@ class ProductsController extends AppController {
 		$this->RequestHandler->renderAs($this, 'json');
 	}
 
-	/* Function for correcting product stock */
+	/* Function for moving multiple products stocks */
+	public function moveProductsStocks() {
+		$response = [];
+
+		if ($this->request->is('post')) {
+			$data = $this->request->getData('data');
+
+			/* Executing stock movement */
+			$this->loadModel('WarehousesProducts');
+			$this->loadModel('Warehouses');
+
+			$productCount = count($data['products']);
+
+			for ($i = 0; $i < $productCount; $i++) {
+				$fromWarehouse = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['from_warehouse_id'], 'product_id' => $data['products'][$i]])->first();
+				$toWarehouse = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['to_warehouse_id'], 'product_id' => $data['products'][$i]])->first();
+
+				/* Patching fromWarehouse */
+				if ($fromWarehouse != null) {
+					$fromWarehouse->stock = $fromWarehouse->stock - $data['amounts'][$i];
+
+					$this->WarehousesProducts->save($fromWarehouse);
+				} else {
+					$fromWarehouse = $this->WarehousesProducts->newEmptyEntity();
+
+					$fromWarehouse->warehouse_id = $data['from_warehouse_id'];
+					$fromWarehouse->product_id = $data['products'][$i];
+					$fromWarehouse->stock = 0 - $data['amounts'][$i];
+
+					$this->WarehousesProducts->save($fromWarehouse);
+				}
+
+				/* Patching toWarehouse */
+				if ($toWarehouse != null) {
+					$toWarehouse->stock = $toWarehouse->stock + $data['amounts'][$i];
+
+					$this->WarehousesProducts->save($toWarehouse);
+				} else {
+					$toWarehouse = $this->WarehousesProducts->newEmptyEntity();
+
+					$toWarehouse->warehouse_id = $data['to_warehouse_id'];
+					$toWarehouse->product_id = $data['products'][$i];
+					$toWarehouse->stock = $data['amounts'][$i];
+
+					$this->WarehousesProducts->save($toWarehouse);
+				}
+
+				/* Write booking */
+				$bookingData = array(
+					'product_id' => $data['products'][$i],
+					'amount' => $data['amounts'][$i],
+					'from_location_id' => $this->Warehouses->findById($data['from_warehouse_id'])->first()->location_id,
+					'to_location_id' => $this->Warehouses->findById($data['to_warehouse_id'])->first()->location_id
+				);
+
+				$this->writeBooking($bookingData);
+			}
+			
+			$response['data'] = $data;
+			$response['success'] = 1;
+		} else {
+			$response['success'] = 0;
+		}
+
+		$this->set(compact('response'));
+		$this->viewBuilder()->setOption('serialize', true);
+		$this->RequestHandler->renderAs($this, 'json');
+	}
+
+	/* Function for correcting a single product stock */
 	public function correctProductStock() {
 		$response = [];
 
@@ -153,8 +223,15 @@ class ProductsController extends AppController {
 
 			/* Executing stock change */
 			$this->loadModel('WarehousesProducts');
+			$this->loadModel('Warehouses');
+			$this->loadModel('BookingReasons');
 
 			$warehouseProduct = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['warehouse_id'], 'product_id' => $data['product_id']])->first();
+			$bookingReason = $this->BookingReasons->findById($data['booking_reason_id'])->first();
+
+			if ($bookingReason->state == 'negative') {
+				$data['stock'] = $data['stock'] * -1;
+			}
 
 			if ($warehouseProduct != null) {
 				$warehouseProduct->stock = $warehouseProduct->stock + $data['stock'];
@@ -169,7 +246,7 @@ class ProductsController extends AppController {
 			$bookingData = array(
 				'product_id' => $data['product_id'],
 				'amount' => $data['stock'],
-				'from_location_id' => $data['warehouse_id'],
+				'from_location_id' => $this->Warehouses->findById($data['warehouse_id'])->first()->location_id,
 				'booking_reason_id' => $data['booking_reason_id']
 			);
 
@@ -224,7 +301,7 @@ class ProductsController extends AppController {
 			$data['bookingReasonsList'] = $bookingReasonsList;
 			$data['test'] = $bookingData;
 
-			$response = ['data' => $data];
+			$response['data'] = $data;
 
 		} else {
 			$response['success'] = 0;
@@ -234,19 +311,75 @@ class ProductsController extends AppController {
 		$this->viewBuilder()->setOption('serialize', true);
 		$this->RequestHandler->renderAs($this, 'json');
 	}
-	
+
+	/* Function for correcting multiple products stocks */
+	public function correctProductsStocks() {
+		$response = [];
+
+		if ($this->request->is('post')) {
+			$data = $this->request->getData('data');
+
+			/* Executing stock change */
+			$this->loadModel('WarehousesProducts');
+			$this->loadModel('Warehouses');
+			$this->loadModel('BookingReasons');
+
+			$productCount = count($data['products']);
+
+			for ($i = 0; $i < $productCount; $i++) {
+				$warehouseProduct = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['warehouse_id'], 'product_id' => $data['products'][$i]])->first();
+				$bookingReason = $this->BookingReasons->findById($data['bookingReasons'][$i])->first();
+
+				if ($bookingReason->state == 'negative') {
+					$data['amounts'][$i] = $data['amounts'][$i] * -1;
+				}
+
+				if ($warehouseProduct != null) {
+					$warehouseProduct->stock = $warehouseProduct->stock + $data['amounts'][$i];
+				} else {
+					$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
+
+					$warehouseProduct['warehouse_id'] = $data['warehouse_id'];
+					$warehouseProduct['product_id'] = $data['products'][$i];
+					$warehouseProduct['stock'] = $data['amounts'][$i];
+				}
+
+				$this->WarehousesProducts->save($warehouseProduct);
+
+				/* Write booking */
+				$bookingData = array(
+					'product_id' => $data['products'][$i],
+					'amount' => $data['amounts'][$i],
+					'from_location_id' => $this->Warehouses->findById($data['warehouse_id'])->first()->location_id,
+					'booking_reason_id' => $data['bookingReasons'][$i]
+				);
+
+				$this->writeBooking($bookingData);
+			}
+
+			$response['data'] = $data;
+			$response['success'] = 1;
+		} else {
+			$response['success'] = 0;
+		}
+
+		$this->set(compact('response'));
+		$this->viewBuilder()->setOption('serialize', true);
+		$this->RequestHandler->renderAs($this, 'json');
+	}
+
 	/* Function for saving a temporary product set */
 	public function saveProductsSet() {
 		$response = [];
 
 		if ($this->request->is('post')) {
 			$data = $this->request->getData('data');
-			
-			
+
+
 		} else {
 			$response['success'] = 0;
 		}
-		
+
 		$this->set(compact('response'));
 		$this->viewBuilder()->setOption('serialize', true);
 		$this->RequestHandler->renderAs($this, 'json');
@@ -455,13 +588,13 @@ class ProductsController extends AppController {
 				if (!(count($row) > 1)) {
 					$row = str_replace('"', '', explode(',', implode($row)));
 				}
-				
+
 				$row[$fileFormat->format['barcode']] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$fileFormat->format['barcode']]);;
 
 				if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
 					/* Update product entity */
 					$product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first();
-					
+
 					$product->name = $row[$fileFormat->format['name']];
 					$product->description = $row[$fileFormat->format['description']];
 
@@ -478,59 +611,59 @@ class ProductsController extends AppController {
 			}
 
 			fclose($file);
-//		} elseif ($fileFormat->file_extension == '.xlsx') {
-//			$filePath = WWW_ROOT .'product_data'. DS . $fileFormat->supplier['name'] . '_test.xlsx';
-//
-//			$reader = ReaderEntityFactory::createXLSXReader();
-//
-//			$reader->open($filePath);
-//
-//			foreach ($reader->getSheetIterator() as $sheet) {
-//				foreach ($sheet->getRowIterator() as $xlsxRow) {
-//					// do stuff with the row
-//					$row = $xlsxRow->getCells();
-//					
-//					debug($row);
+			//		} elseif ($fileFormat->file_extension == '.xlsx') {
+			//			$filePath = WWW_ROOT .'product_data'. DS . $fileFormat->supplier['name'] . '_test.xlsx';
+			//
+			//			$reader = ReaderEntityFactory::createXLSXReader();
+			//
+			//			$reader->open($filePath);
+			//
+			//			foreach ($reader->getSheetIterator() as $sheet) {
+			//				foreach ($sheet->getRowIterator() as $xlsxRow) {
+			//					// do stuff with the row
+			//					$row = $xlsxRow->getCells();
+			//					
+			//					debug($row);
 
-//					$standardLength = 0;
-//					$barcodeLength = floor(log10(intval($row[$fileFormat->format['barcode']]->getValue())) + 1);
-//
-//					switch ($fileFormat->supplier->name) {
-//						case 'Oosterberg': 
-//							$standardLength = 8;
-//					}
-//
-//					if ($barcodeLength < $standardLength) {
-//						$difference = $standardLength - $barcodeLength;
-//
-//						$row[$fileFormat->format['barcode']] = strval($row[$fileFormat->format['barcode']]);
-//
-//						for ($i = 0; $i < $difference; $i++) {
-//							$row[$fileFormat->format['barcode']] = '0' . $row[$fileFormat->format['barcode']];
-//						}
-//					}
-//
-//					if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
-//						/* Update product entity */
-//						$product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first();
-//
-//						$product->name = $row[$fileFormat->format['name']];
-//						$product->description = $row[$fileFormat->format['description']];
-//
-//						if ($this->Products->save($product)) {
-//							$key = array_search($product->barcode, $productsArray);
-//
-//							unset($productsArray[$key]);
-//						} else {
-//							continue;
-//						}
-//					} else {
-//						continue;
-//					}
-//				}
-//			}
+			//					$standardLength = 0;
+			//					$barcodeLength = floor(log10(intval($row[$fileFormat->format['barcode']]->getValue())) + 1);
+			//
+			//					switch ($fileFormat->supplier->name) {
+			//						case 'Oosterberg': 
+			//							$standardLength = 8;
+			//					}
+			//
+			//					if ($barcodeLength < $standardLength) {
+			//						$difference = $standardLength - $barcodeLength;
+			//
+			//						$row[$fileFormat->format['barcode']] = strval($row[$fileFormat->format['barcode']]);
+			//
+			//						for ($i = 0; $i < $difference; $i++) {
+			//							$row[$fileFormat->format['barcode']] = '0' . $row[$fileFormat->format['barcode']];
+			//						}
+			//					}
+			//
+			//					if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
+			//						/* Update product entity */
+			//						$product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first();
+			//
+			//						$product->name = $row[$fileFormat->format['name']];
+			//						$product->description = $row[$fileFormat->format['description']];
+			//
+			//						if ($this->Products->save($product)) {
+			//							$key = array_search($product->barcode, $productsArray);
+			//
+			//							unset($productsArray[$key]);
+			//						} else {
+			//							continue;
+			//						}
+			//					} else {
+			//						continue;
+			//					}
+			//				}
+			//			}
 
-//			$reader->close();
+			//			$reader->close();
 
 			//			$xlsx = SimpleXLSX::parse($filePath);
 

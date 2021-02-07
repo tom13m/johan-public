@@ -22,6 +22,12 @@ class CreateBookingReasons extends AbstractMigration
 			'default' => null
 		]);
 		
+		$table->addColumn('state', 'string', [
+			'null' => false,
+			'length' => 20,
+			'default' => 'positive'
+		])
+		
         $table->create();
     }
 }

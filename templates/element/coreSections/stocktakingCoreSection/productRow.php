@@ -7,7 +7,7 @@
 		<?= $this->Form->control('bookingReasons[]', ['label' => false, 'options' => $data['bookingReasonsList']]); ?>
 	</div>
 	<div class="col-md-3">
-		<?= $this->Form->control('amount[]', ['label' => false, 'type' => 'number', 'default' => 0, 'class' => 'stockTakingProductAmountField']); ?>
+		<?= $this->Form->control('amounts[]', ['label' => false, 'type' => 'number', 'default' => 0, 'class' => 'stockTakingProductAmountField']); ?>
 	</div>
 </div>
 
