@@ -18,12 +18,20 @@ html, body, .content {
 .contentBody {
 	height: 90%;
 	overflow: auto;
-	padding: 0px 0px 30px 0px;
+	padding: 0px 0px 0px 0px;
 }
 
 .nop {
 	margin: 0px;
 	padding: 0px;
+}
+
+.fullHeight {
+	height: 100%;
+}
+
+.fullWidth {
+	width: 100%;
 }
 
 
@@ -118,6 +126,24 @@ html, body, .content {
 
 
 /* |||||||||| Core sections |||||||||| */
+.coreSection {
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
+.coreSection.active {
+	display: block;
+}
+
+.coreSectionRow {
+	height: 100%;
+}
+
+.coreSectionContent {
+	padding: 5% 0px 5% 0px;
+}
+
 .topBar {
 	height: 50px;
 	line-height: 50px;
@@ -131,7 +157,6 @@ html, body, .content {
     white-space:nowrap; 
 	text-overflow: ellipsis;
 }
-
 
 
 /* \\\\\\\\ Scan Core Section //////// */
@@ -203,6 +228,91 @@ html, body, .content {
 
 .productStockDivWarehouseSubTitle {
 	font-size: 13px;
+}
+
+
+/* \\\\\\\\ Stocktaking Core Section //////// */
+.stocktakingHeadOption {
+	height: 40px;
+	background-color: var(--patent-color);
+	border-radius: 10px;
+	line-height: 40px;
+	text-align: center;
+}
+
+.stocktakingHeadOption.active {
+	background-color: var(--main-color);
+}
+
+.stocktakingProductsSection {
+	height: 80%;
+	overflow: auto;
+}
+
+.stocktakingSubBlock {
+	display: none !important;
+	padding: 5% 0px 0px 0px;
+}
+
+.stocktakingSubBlock.active {
+	display: block !important;
+}
+
+.stocktakingProductRow {
+/*	min-height: 40px;*/
+	line-height: 40px;
+	border: 1px solid var(--patent-color);
+	background-color: white;
+}
+
+.stocktakingProductRow.success {
+	background-color: var(--main-color);
+	color: white;
+}
+
+.stocktakingProductNameField {
+	padding: 0;
+	margin: 0;
+	font-weight: bold;
+}
+
+.stocktakingBookingReasonField {
+	height: 30px;
+	width: 90%;	
+}
+
+.stockTakingProductAmountField {
+	height: 30px;
+	width: 90%;
+}
+
+.stocktakingOption {
+	height: 50px;
+	font-size: 25px;
+	color: #333333;
+	line-height: 50px;
+	text-align: center;
+	border: 1px solid #333333;
+}
+
+.stocktakingOption.active {
+	border: 3px solid var(--main-color);
+}
+
+.stocktakingOptionSubSection {
+	display: none !important;
+}
+
+.stocktakingOptionSubSection.active {
+	display: block !important;
+}
+
+.stocktakingSubmitSection {
+	background-color: var(--main-color);
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	margin: 5% 0px 0px 0px;
 }
 
 

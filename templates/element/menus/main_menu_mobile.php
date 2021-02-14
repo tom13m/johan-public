@@ -17,23 +17,24 @@
 			</div>
 		</div>
 
-		
+
 		<div class="col-5">
 			<div class="row">
 				<div id="productsMenuBlock" class="menuBlock col-10 offset-1">
-					<i class="fas fa-plug"> </i>
+					<i class="fas fa-cubes"> </i>
 					<p class="menuBlockTitle"> Producten </p>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<!-- Menu options for ____ and _____ core sections -->
+	<!-- Menu options for stocktaking and _____ core sections -->
 	<div class="menuRow row">
 		<div class="col-5 offset-1">
 			<div class="row">
-				<div class="menuBlock col-10 offset-1">
-
+				<div id="stocktakingMenuBlock" class="menuBlock col-10 offset-1"  onclick="openCoreSection('stocktaking')">
+					<i class="fas fa-truck-loading"> </i>
+					<p class="menuBlockTitle"> Inventarisatie </p>
 				</div>
 			</div>
 		</div>

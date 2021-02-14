@@ -18,6 +18,10 @@ function processBarcode() {
 			/* Opening scan core section and setting data */
 			openCoreSection('scan', data);
 		}
+	} else if (coreSection == 'products') {
+		document.getElementById('productFormBarcode').value = barcode;
+	} else if (coreSection == 'stocktaking') {
+		addStocktakingProduct(barcode);
 	} else {
 
 	}
@@ -39,10 +43,15 @@ function openCoreSection(section = null, data = null) {
 
 		/* Rendering content of chosen section if not yet done */
 		if ($(openCoreSection).children().length == 0) {
-			let elementPath = 'coreSections_mobile_' + section + 'CoreSection';
-			let elementId = section + 'CoreSection';
+			action = 'init' + capitalize(section) + 'CoreSection';
+			$data = ajaxRequest('main', action, null, continueOpenCoreSection);
 
-			renderElement(elementPath, data, elementId);
+			function continueOpenCoreSection(data) {
+				let elementPath = 'coreSections_mobile_' + section + 'CoreSection';
+				let elementId = section + 'CoreSection';
+
+				renderElement(elementPath, data, elementId);
+			}
 		} else if (data != null) {
 			$(openCoreSection).empty();
 

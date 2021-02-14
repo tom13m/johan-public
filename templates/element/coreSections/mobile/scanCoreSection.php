@@ -18,48 +18,35 @@
 <?php } else { ?>
 
 <div class="coreSectionRow row">
-
 	<div class="col-12">
-		<!-- Product information -->
-		<div class="row">
-			<div class="col-12">
-				<div class="topBar row">
-					<div class="topBarTitle col-12"> <?= $data['product']['name']; ?> </div>			
-				</div>
-			</div>
+		<!-- Top bar -->
+		<div class="topBar row">
+			<div class="topBarTitle col-12"> <?= $data['product']['name']; ?> </div>			
 		</div>
-		<div class="row">
+
+		<!-- Product information -->
+		<div class="coreSectionContent row">
 			<div class="col-12">
-				<div class="coreSectionContent row">
-					<div class="col-12">
-						<!-- General information -->
-						<span id="scanProductGeneralSection">
-							<?= $this->Element('coreSections/mobile/scanCoreSection/productGeneral'); ?>
-						</span>
+				<!-- General information -->
+				<span id="scanProductGeneralSection">
+					<?= $this->Element('coreSections/mobile/scanCoreSection/productGeneral'); ?>
+				</span>
 
-						<!-- Product stock -->
-						<span id="scanProductStockSection">
-							<?= $this->Element('coreSections/mobile/scanCoreSection/productStock'); ?>
-						</span>
+				<!-- Product stock -->
+				<span id="scanProductStockSection">
+					<?= $this->Element('coreSections/mobile/scanCoreSection/productStock'); ?>
+				</span>
 
-						<!-- Temporary -->
-						<span id="scanProductTempoSection">
-							<?= $this->Element('coreSections/mobile/scanCoreSection/tempo'); ?>
-						</span>
-						
-						<!-- Temporary -->
-						<span id="scanProductTempo2Section">
-							<?= $this->Element('coreSections/mobile/scanCoreSection/tempo2'); ?>
-						</span>
-					</div>
-				</div>
+				<!-- Temporary -->
+				<span id="scanProductTempoSection">
+					<?= $this->Element('coreSections/mobile/scanCoreSection/tempo'); ?>
+				</span>
 			</div>
 		</div>
 
 		<!-- Test button for toggling action menu -->
 		<!--		<button type="button" onclick="toggleMenu('scanActionMenu')"> Acties </button>-->
 	</div>
-
 </div>
 
 <?php } ?>
