@@ -600,7 +600,7 @@ class ProductsController extends AppController {
 					$product->description = utf8_encode($row[$fileFormat->format['description']]);
 					$product->supplier_id = $fileFormat->supplier->id;
 
-					if ($product = $this->Products->save($product)) {
+					if ($product2 = $this->Products->save($product)) {
 						$key = array_search($product->barcode, $productsArray);
 
 						unset($productsArray[$key]);
@@ -608,9 +608,9 @@ class ProductsController extends AppController {
 						/* Temporary stock manipulation */
 						$this->loadModel('WarehousesProducts');
 
-						if ($warehouseProduct = $this->WarehousesProducts->findByProductId($product->id)->first()) {
+						if ($warehouseProduct = $this->WarehousesProducts->findByProductId($product2->id)->first()) {
 							$warehouseProduct->warehouse_id = 1;
-							$warehouseProduct->product_id = $product->id;
+							$warehouseProduct->product_id = $product2->id;
 							$warehouseProduct->stock = intval($row[2]);
 
 							$this->WarehousesProducts->save($warehouseProduct);
@@ -618,7 +618,7 @@ class ProductsController extends AppController {
 							$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
 
 							$warehouseProduct->warehouse_id = 1;
-							$warehouseProduct->product_id = $product->id;
+							$warehouseProduct->product_id = $product2->id;
 							$warehouseProduct->stock = intval($row[2]);
 
 							$this->WarehousesProducts->save($warehouseProduct);
@@ -635,7 +635,7 @@ class ProductsController extends AppController {
 					$product->description = utf8_encode($row[$fileFormat->format['description']]);
 					$product->supplier_id = $fileFormat->supplier->id;
 
-					$product = $this->Products->save($product);
+					$product2 = $this->Products->save($product);
 
 					/* Temporary stock manipulation */
 					$this->loadModel('WarehousesProducts');
@@ -643,7 +643,7 @@ class ProductsController extends AppController {
 					$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
 
 					$warehouseProduct->warehouse_id = 1;
-					$warehouseProduct->product_id = $product->id;
+					$warehouseProduct->product_id = $product2->id;
 					$warehouseProduct->stock = intval($row[2]);
 
 					$this->WarehousesProducts->save($warehouseProduct);
