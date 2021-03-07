@@ -596,8 +596,8 @@ class ProductsController extends AppController {
 					/* Update product entity */
 					$product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first();
 
-					$product->name = $row[$fileFormat->format['name']];
-					$product->description = $row[$fileFormat->format['description']];
+					$product->name = utf8_encode($row[$fileFormat->format['name']]);
+					$product->description = utf8_encode($row[$fileFormat->format['description']]);
 					$product->supplier_id = $fileFormat->supplier->id;
 
 					if ($product = $this->Products->save($product)) {
@@ -631,8 +631,8 @@ class ProductsController extends AppController {
 					$product = $this->Products->newEmptyEntity();
 
 					$product->barcode = $row[$fileFormat->format['barcode']];
-					$product->name = $row[$fileFormat->format['name']];
-					$product->description = $row[$fileFormat->format['description']];
+					$product->name = utf8_encode($row[$fileFormat->format['name']]);
+					$product->description = utf8_encode($row[$fileFormat->format['description']]);
 					$product->supplier_id = $fileFormat->supplier->id;
 
 					$product = $this->Products->save($product);
