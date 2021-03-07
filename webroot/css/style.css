@@ -1,6 +1,7 @@
 /* CSS variables */
 :root {
 	--main-color: #00cc99;
+	--main-dark-color: #00b386;
 	--secondary-color: #404040;
 	--patent-color: #e6e6e6;
 	--background-color: whitesmoke;
@@ -336,6 +337,126 @@ form {
 	text-align: center;
 	line-height: 50px;
 }
+
+
+/* \\\\\\\\ Orders Core Section //////// */
+.orderLists {
+	height: 565px;
+	overflow: hidden;
+}
+
+.orderListHead {
+	background-color: var(--main-color);
+	height: 40px;
+	line-height: 40px;
+}
+
+.orderListBody {
+	height: 485px;
+	overflow: auto;
+	background-color: var(--patent-color);
+	overflow: hidden;
+}
+
+.orderListItem {
+	background-color: white;
+	height: 40px;
+	line-height: 40px;
+	border: 1px solid var(--patent-color);
+}
+
+.orderListAddButton {
+	height: 200px;
+	background-color: var(--secondary-color);
+	color: white;
+	line-height: 40px;
+	transition: 0.5s;
+	cursor: pointer;
+}
+
+.orderListAddButton.active {
+	margin-top: -160px;
+	cursor: default;
+}
+
+.addOrderFormVisibleTitle {
+	padding: 0px 0px 5% 0px;
+}
+
+.addOrderFormCloseIcon {
+	text-align: center;
+	font-size: 20px;
+	cursor: pointer;
+	display: none !important;
+}
+
+.addOrderFormCloseIcon.active {
+	display: contents !important;
+}
+
+.addOrderFormTitle {
+	padding: 0;
+	margin: 0;
+}
+
+.addOrderFormNameField {
+	width: 100%;
+}
+
+.addOrderFormCheckbox {
+	height: 25px;
+	width: 25px;
+	margin: 7px 0px 0px 0px;
+}
+
+.addOrderFormSubmit {
+	background-color: var(--main-color);
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+}
+
+.orderContent {
+	margin: 0px 0px 0px 4%;
+}
+
+.orderTitleHead {
+	background-color: var(--main-color);
+	height: 40px;
+	line-height: 40px;
+}
+
+.orderTitleTab {
+	width: auto;
+	height: 100%;
+	padding: 0% 3% 0% 3%;
+	display: inline;
+	background-color: var(--main-color);
+	border-left: 2px solid var(--main-dark-color);
+	border-right: 2px solid var(--main-dark-color);
+}
+
+.orderTitleTab.active {
+	background-color: var(--main-dark-color);
+}
+
+.orderSpecHead {
+	height: 25px;
+	background-color: var(--patent-color);
+}
+
+.orderSaveIcon {
+	color: white;
+	position: absolute;
+	right: 3%;
+	line-height: 40px !important;
+}
+
+.orderContentBody {
+	background-color: white;
+	height: 500px;
+}
+
 
 /* |||||||||| Action Menus |||||||||| */
 

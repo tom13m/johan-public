@@ -14,6 +14,11 @@
 		Inventarisatie
 	</div>
 </div>
+<div class="menuRow row" id="orderMenuRow" onclick="openCoreSection('order')">
+	<div class="menuItem">
+		Bestellen
+	</div>
+</div>
 <div class="menuRow row" id="logoffMenuRow" onclick="redirect('<?= $this->Url->Build(['controller' => 'users', 'action' => 'logout']); ?>')">
 	<div class="menuItem">
 		Log-out

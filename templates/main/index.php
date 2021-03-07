@@ -10,3 +10,7 @@
 <section id="stocktakingCoreSection" class="coreSection container-fluid">
 	<!-- Stocktaking section: a section for moving products in a bulk-ish manner -->
 </section>
+
+<section id="orderCoreSection" class="coreSection container-fluid">
+	<!-- Order section: a section for ordering products in a bulk-ish manner -->
+</section>

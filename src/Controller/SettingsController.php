@@ -28,10 +28,10 @@ class SettingsController extends AppController {
 
 		$fileFormat = $this->FileFormats->newEmptyEntity();
 
-		$fileFormat->name = 'Oosterberg';
+		$fileFormat->name = 'Test';
 		/* Barcode positions are always minus one because of the default array structure */
-		$fileFormat->format = serialize(array('barcode' => 0, 'name' => 1, 'description' => 2));
-		$fileFormat->file_extension = '.xlsx';
+		$fileFormat->format = serialize(array('barcode' => 0, 'name' => 1, 'description' => 1));
+		$fileFormat->file_extension = '.csv';
 
 		if ($this->FileFormats->save($fileFormat)) {
 			return $this->redirect(['controller' => 'settings', 'action' => 'index']);

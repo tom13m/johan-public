@@ -90,8 +90,8 @@ class ProductsController extends AppController {
 			}
 
 			/* Write booking */
-			
-			
+
+
 			$bookingData = array(
 				'product_id' => $data['product_id'],
 				'amount' => $data['amount'],
@@ -202,7 +202,7 @@ class ProductsController extends AppController {
 
 				$this->writeBooking($bookingData);
 			}
-			
+
 			$response['data'] = $data;
 			$response['success'] = 1;
 		} else {
@@ -567,7 +567,7 @@ class ProductsController extends AppController {
 		/* Findind file format */
 		$this->loadModel('FileFormats');
 
-		$fileFormat = $this->FileFormats->findById('4')->contain(['Suppliers'])->first();
+		$fileFormat = $this->FileFormats->findById('1')->contain(['Suppliers'])->first();
 		$fileFormat->format = unserialize($fileFormat->format);
 
 		/* Finding existing products by supplier and producing an array */
@@ -580,7 +580,8 @@ class ProductsController extends AppController {
 
 		/* Reading file */
 		if ($fileFormat->file_extension == '.csv') {
-			$filePath = WWW_ROOT .'product_data'. DS . $fileFormat->supplier['name'] . '.csv';
+			/*$filePath = WWW_ROOT .'product_data'. DS . $fileFormat->supplier['name'] . '.csv';*/
+			$filePath = WWW_ROOT .'product_data'. DS . 'telp.csv';
 			$file = fopen($filePath, "r");
 
 			/* Cheking if product is in csv, if so update and remove from productsarray */
@@ -589,7 +590,7 @@ class ProductsController extends AppController {
 					$row = str_replace('"', '', explode(',', implode($row)));
 				}
 
-				$row[$fileFormat->format['barcode']] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$fileFormat->format['barcode']]);;
+				$row[$fileFormat->format['barcode']] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$fileFormat->format['barcode']]);
 
 				if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
 					/* Update product entity */
@@ -597,16 +598,55 @@ class ProductsController extends AppController {
 
 					$product->name = $row[$fileFormat->format['name']];
 					$product->description = $row[$fileFormat->format['description']];
+					$product->supplier_id = $fileFormat->supplier->id;
 
-					if ($this->Products->save($product)) {
+					if ($product = $this->Products->save($product)) {
 						$key = array_search($product->barcode, $productsArray);
 
 						unset($productsArray[$key]);
+
+						/* Temporary stock manipulation */
+						$this->loadModel('WarehousesProducts');
+
+						if ($warehouseProduct = $this->WarehousesProducts->findByProductId($product->id)->first()) {
+							$warehouseProduct->warehouse_id = 1;
+							$warehouseProduct->product_id = $product->id;
+							$warehouseProduct->stock = intval($row[2]);
+
+							$this->WarehousesProducts->save($warehouseProduct);
+						} else {
+							$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
+
+							$warehouseProduct->warehouse_id = 1;
+							$warehouseProduct->product_id = $product->id;
+							$warehouseProduct->stock = intval($row[2]);
+
+							$this->WarehousesProducts->save($warehouseProduct);
+						}
 					} else {
 						continue;
 					}
 				} else {
-					continue;
+					/* Create new product entity */
+					$product = $this->Products->newEmptyEntity();
+
+					$product->barcode = $row[$fileFormat->format['barcode']];
+					$product->name = $row[$fileFormat->format['name']];
+					$product->description = $row[$fileFormat->format['description']];
+					$product->supplier_id = $fileFormat->supplier->id;
+
+					$product = $this->Products->save($product);
+
+					/* Temporary stock manipulation */
+					$this->loadModel('WarehousesProducts');
+
+					$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
+
+					$warehouseProduct->warehouse_id = 1;
+					$warehouseProduct->product_id = $product->id;
+					$warehouseProduct->stock = intval($row[2]);
+
+					$this->WarehousesProducts->save($warehouseProduct);
 				}
 			}
 

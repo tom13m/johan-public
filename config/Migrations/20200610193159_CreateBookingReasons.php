@@ -26,7 +26,7 @@ class CreateBookingReasons extends AbstractMigration
 			'null' => false,
 			'length' => 20,
 			'default' => 'positive'
-		])
+		]);
 		
         $table->create();
     }
