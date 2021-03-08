@@ -581,7 +581,7 @@ class ProductsController extends AppController {
 		/* Reading file */
 		if ($fileFormat->file_extension == '.csv') {
 			/*$filePath = WWW_ROOT .'product_data'. DS . $fileFormat->supplier['name'] . '.csv';*/
-			$filePath = WWW_ROOT .'product_data'. DS . 'telo.csv';
+			$filePath = WWW_ROOT .'product_data'. DS . 'telp.csv';
 			$file = fopen($filePath, "r");
 
 			/* Cheking if product is in csv, if so update and remove from productsarray */
