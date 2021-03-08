@@ -564,7 +564,7 @@ class ProductsController extends AppController {
 
 	/* Function for handling updated product data */
 	public function updateProducts() {
-		/* Findind file format */
+		/* Find file format */
 		$this->loadModel('FileFormats');
 
 		$fileFormat = $this->FileFormats->findById('1')->contain(['Suppliers'])->first();
@@ -770,6 +770,44 @@ class ProductsController extends AppController {
 			//				
 			//				$i++;
 			//			}
+		}
+	}
+	
+	public function test() {
+		/* Find file format */
+		$this->loadModel('FileFormats');
+
+		$fileFormat = $this->FileFormats->findById('1')->contain(['Suppliers'])->first();
+		$fileFormat->format = unserialize($fileFormat->format);
+
+		/* Finding existing products by supplier and producing an array */
+		$products = $this->Products->findBySupplierId($fileFormat->supplier_id)->select(['barcode']);
+		$productsArray = [];
+
+		Foreach ($products as $product) {
+			array_push($productsArray, $product->barcode);
+		}
+
+		/* Reading file */
+		if ($fileFormat->file_extension == '.csv') {
+			/*$filePath = WWW_ROOT .'product_data'. DS . $fileFormat->supplier['name'] . '.csv';*/
+			$filePath = WWW_ROOT .'product_data'. DS . 'telp.csv';
+			$file = fopen($filePath, "r");
+
+			/* Cheking if product is in csv, if so update and remove from productsarray */
+			while (($row = fgetcsv($file)) !== FALSE) {
+				if (!(count($row) > 1)) {
+					$row = str_replace('"', '', explode(',', implode($row)));
+				}
+				
+				$row[$fileFormat->format['barcode']] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$fileFormat->format['barcode']]);
+				
+				if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
+				
+				} else {
+					echo $row[$fileFormat->format['barcode']];
+				}
+			}
 		}
 	}
 }
