@@ -567,7 +567,7 @@ class ProductsController extends AppController {
 		/* Find file format */
 		$this->loadModel('FileFormats');
 
-		$fileFormat = $this->FileFormats->findById('2')->contain(['Suppliers'])->first();
+		$fileFormat = $this->FileFormats->findById('6')->contain(['Suppliers'])->first();
 		$fileFormat->format = unserialize($fileFormat->format);
 
 		/* Finding existing products by supplier and producing an array */
