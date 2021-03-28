@@ -594,75 +594,75 @@ class ProductsController extends AppController {
 					
 					$row = str_getcsv($row[0], ",", '"', '"');
 					
-					debug($row);
+//					debug($row);
 				}
 
 				$row[$fileFormat->format['barcode']] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$fileFormat->format['barcode']]);
 
 //				debug($row);
 				
-//				if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
-//					/* Update product entity */
-//					$product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first();
-//
-//					$product->name = utf8_encode($row[$fileFormat->format['name']]);
-//					$product->description = utf8_encode($row[$fileFormat->format['description']]);
-//					$product->supplier_id = $fileFormat->supplier->id;
-//
-//					if ($product2 = $this->Products->save($product)) {
-//						$key = array_search($product->barcode, $productsArray);
-//
-//						unset($productsArray[$key]);
-//
-//						/* Temporary stock manipulation */
-//						$this->loadModel('WarehousesProducts');
-//
-//						if ($warehouseProduct = $this->WarehousesProducts->findByProductId($product2->id)->first()) {
-//							$warehouseProduct->warehouse_id = 1;
-//							$warehouseProduct->product_id = $product2->id;
-//							$warehouseProduct->stock = intval($row[4]);
-//							$warehouseProduct->minimum_stock = intval($row[2]);
-//							$warehouseProduct->maximum_stock = intval($row[3]);
-//
-//							$this->WarehousesProducts->save($warehouseProduct);
-//						} else {
-//							$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
-//
-//							$warehouseProduct->warehouse_id = 1;
-//							$warehouseProduct->product_id = $product2->id;
-//							$warehouseProduct->stock = intval($row[4]);
-//							$warehouseProduct->minimum_stock = intval($row[2]);
-//							$warehouseProduct->maximum_stock = intval($row[3]);
-//
-//							$this->WarehousesProducts->save($warehouseProduct);
-//						}
-//					} else {
-//						continue;
-//					}
-//				} else {
-//					/* Create new product entity */
-//					$product = $this->Products->newEmptyEntity();
-//
-//					$product->barcode = $row[$fileFormat->format['barcode']];
-//					$product->name = utf8_encode($row[$fileFormat->format['name']]);
-//					$product->description = utf8_encode($row[$fileFormat->format['description']]);
-//					$product->supplier_id = $fileFormat->supplier->id;
-//
-//					$product2 = $this->Products->save($product);
-//
-//					/* Temporary stock manipulation */
-//					$this->loadModel('WarehousesProducts');
-//
-//					$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
-//
-//					$warehouseProduct->warehouse_id = 1;
-//					$warehouseProduct->product_id = $product2->id;
-//					$warehouseProduct->stock = intval($row[4]);
-//					$warehouseProduct->minimum_stock = intval($row[2]);
-//					$warehouseProduct->maximum_stock = intval($row[3]);
-//
-//					$this->WarehousesProducts->save($warehouseProduct);
-//				}
+				if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
+					/* Update product entity */
+					$product = $this->Products->findByBarcode($row[$fileFormat->format['barcode']])->first();
+
+					$product->name = utf8_encode($row[$fileFormat->format['name']]);
+					$product->description = utf8_encode($row[$fileFormat->format['description']]);
+					$product->supplier_id = $fileFormat->supplier->id;
+
+					if ($product2 = $this->Products->save($product)) {
+						$key = array_search($product->barcode, $productsArray);
+
+						unset($productsArray[$key]);
+
+						/* Temporary stock manipulation */
+						$this->loadModel('WarehousesProducts');
+
+						if ($warehouseProduct = $this->WarehousesProducts->findByProductId($product2->id)->first()) {
+							$warehouseProduct->warehouse_id = 1;
+							$warehouseProduct->product_id = $product2->id;
+							$warehouseProduct->stock = intval($row[4]);
+							$warehouseProduct->minimum_stock = intval($row[2]);
+							$warehouseProduct->maximum_stock = intval($row[3]);
+
+							$this->WarehousesProducts->save($warehouseProduct);
+						} else {
+							$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
+
+							$warehouseProduct->warehouse_id = 1;
+							$warehouseProduct->product_id = $product2->id;
+							$warehouseProduct->stock = intval($row[4]);
+							$warehouseProduct->minimum_stock = intval($row[2]);
+							$warehouseProduct->maximum_stock = intval($row[3]);
+
+							$this->WarehousesProducts->save($warehouseProduct);
+						}
+					} else {
+						continue;
+					}
+				} else {
+					/* Create new product entity */
+					$product = $this->Products->newEmptyEntity();
+
+					$product->barcode = $row[$fileFormat->format['barcode']];
+					$product->name = utf8_encode($row[$fileFormat->format['name']]);
+					$product->description = utf8_encode($row[$fileFormat->format['description']]);
+					$product->supplier_id = $fileFormat->supplier->id;
+
+					$product2 = $this->Products->save($product);
+
+					/* Temporary stock manipulation */
+					$this->loadModel('WarehousesProducts');
+
+					$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
+
+					$warehouseProduct->warehouse_id = 1;
+					$warehouseProduct->product_id = $product2->id;
+					$warehouseProduct->stock = intval($row[4]);
+					$warehouseProduct->minimum_stock = intval($row[2]);
+					$warehouseProduct->maximum_stock = intval($row[3]);
+
+					$this->WarehousesProducts->save($warehouseProduct);
+				}
 			}
 
 			fclose($file);
