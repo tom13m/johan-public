@@ -567,7 +567,7 @@ class ProductsController extends AppController {
 		/* Find file format */
 		$this->loadModel('FileFormats');
 
-		$fileFormat = $this->FileFormats->findById('1')->contain(['Suppliers'])->first();
+		$fileFormat = $this->FileFormats->findById('2')->contain(['Suppliers'])->first();
 		$fileFormat->format = unserialize($fileFormat->format);
 
 		/* Finding existing products by supplier and producing an array */
@@ -581,7 +581,7 @@ class ProductsController extends AppController {
 		/* Reading file */
 		if ($fileFormat->file_extension == '.csv') {
 			/*$filePath = WWW_ROOT .'product_data'. DS . $fileFormat->supplier['name'] . '.csv';*/
-			$filePath = WWW_ROOT .'product_data'. DS . 'minMaxPL.csv';
+			$filePath = WWW_ROOT .'product_data'. DS . 'minMaxOS.csv';
 			$file = fopen($filePath, "r");
 
 			/* Cheking if product is in csv, if so update and remove from productsarray */		
