@@ -355,7 +355,6 @@ form {
 	height: 485px;
 	overflow: auto;
 	background-color: var(--patent-color);
-	overflow: hidden;
 }
 
 .orderListItem {
@@ -372,6 +371,7 @@ form {
 	line-height: 40px;
 	transition: 0.5s;
 	cursor: pointer;
+	position: relative;
 }
 
 .orderListAddButton.active {
@@ -434,10 +434,12 @@ form {
 	background-color: var(--main-color);
 	border-left: 2px solid var(--main-dark-color);
 	border-right: 2px solid var(--main-dark-color);
+	cursor: pointer;
 }
 
 .orderTitleTab.active {
 	background-color: var(--main-dark-color);
+	cursor: default;
 }
 
 .orderSpecHead {
@@ -455,6 +457,14 @@ form {
 .orderContentBody {
 	background-color: white;
 	height: 500px;
+}
+
+.orderTab {
+	display: none !important;
+}
+
+.orderTab.active {
+	display: block !important;
 }
 
 

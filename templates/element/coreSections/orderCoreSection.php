@@ -1,5 +1,4 @@
 <div class="coreSectionRow row">
-
 	<div class="col-md-12">
 		<!-- Top bar -->
 		<div class="row">
@@ -27,12 +26,10 @@
 						<!-- Order list body -->
 						<div class="orderListBody row">
 							<!-- Active orders will be shown in this list -->
-							<div class="col-md-12">
-								<div class="orderListItem row">
-									<div class="col-md-12">
-										Test Bestellijst
-									</div>
-								</div>
+							<div id="orderList" class="col-md-12">
+								<?php Foreach ($data['orders'] as $order) {
+									echo $this->Element('coreSections/orderCoreSection/orderRow', ["order" => $order]);
+								} ?>
 							</div>
 						</div>
 						<div id="orderListAdd" class="orderListAddButton row">
@@ -82,25 +79,14 @@
 								<div class="orderContentHead row">
 									<div class="col-md-12">
 										<div class="orderTitleHead row">
-											<div class="orderTitleTab active">
+											<div id="orderProductsTitleTab" class="orderTitleTab active" onclick="switchOrderTab('products')">
 												Producten
 											</div>
-											<div class="orderTitleTab">
+											<div id="orderSendOptionsTitleTab" class="orderTitleTab"  onclick="switchOrderTab('sendOptions')">
 												Verzendopties
 											</div>
 
 											<i class="orderSaveIcon fas fa-save" onclick=""> </i>
-										</div>
-										<div class="orderSpecHead row">
-											<div class="col-md-6">
-												Naam van het product
-											</div>
-											<div class="col-md-2">
-												Aantal
-											</div>
-											<div class="col-md-3">
-												Leverancier
-											</div>
 										</div>
 									</div>
 								</div>
@@ -108,7 +94,35 @@
 								<!-- Body order content -->
 								<div class="orderContentBody row">
 									<div class="col-md-12">
+										<!-- Products tab -->
+										<div id="orderProductsTab" class="orderTab active row">
+											<div class="col-md-12">
+												<div class="orderSpecHead row">
+													<div class="col-md-5">
+														Naam van het product
+													</div>
+													<div class="col-md-3">
+														Leverancier
+													</div>
+													<div class="col-md-2">
+														Min/Max
+													</div>
+													<div class="col-md-2">
+														Aantal
+													</div>
+												</div>
 
+												<!-- Order product sections will be displayed here -->
+												<div id="orderProductsSection" class="orderProductsSection col-md-12">
+													
+												</div>
+											</div>
+										</div>
+
+										<!-- Send options tab -->
+										<div id="orderSendOptionsTab" class="orderTab row">
+											Test 2
+										</div>
 									</div>
 								</div>
 							</div>
@@ -123,13 +137,71 @@
 
 <!-- Temporary script -->
 <script>
+	/* Function for adding a product to the opened order list */
+	function addProductToOrder(barcode) {
+		let data = {};
+		data['barcode'] = barcode;
+
+		/* Check if a order is opened on the page */
+		let orderListProductsSection = 
+
+			ajaxRequest('Orders', 'addProductToOrder', data, process);
+
+		function process(data) {
+			console.log(data);
+		}
+	}
+
+	/* Function for removing a product from an order list */
+	function removeProductFromOrder(barcode) {
+
+	}
+	
+	/* Function for displaying an order */
+	function displayOrder(orderId) {
+		let data = {};
+		data['orderId'] = orderId;
+		
+		ajaxRequest('Orders', 'getOrderData', data, process);
+		
+		function process(data) {
+			
+		}
+	}
+
 	/* Function for adding a new order list */
 	function addOrderList() {
 		let form = document.getElementById('addOrderForm');
 
 		let formData = serializeFormData(form);
 
-		console.log(formData);
+		ajaxRequest('Orders', 'addOrder', formData, process);
+
+		function process(data) {
+			console.log(data);
+
+			/* Close add order section */
+			toggleAddOrderList(true);
+
+			/* Prepend order row */
+			let elementPath = 'coreSections_orderCoreSection_orderRow';
+			let elementId = 'orderList';
+
+			renderElementAppend(elementPath, data, elementId);
+		}
+	}
+
+	/* Function for switching order tabs */
+	function switchOrderTab(tab) {
+		/* Title tabs */
+		let titleTabId = 'order' + capitalize(tab) + 'TitleTab';
+
+		setActive('orderTitleTab', titleTabId);
+
+		/* Content tabs */
+		let tabId = 'order' + capitalize(tab) + 'Tab';
+
+		setActive('orderTab', tabId);
 	}
 
 

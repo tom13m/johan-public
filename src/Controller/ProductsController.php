@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use Cake\Controller\Controller;
-use SimpleXLSX;
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+//use SimpleXLSX;
+//use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+//use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class ProductsController extends AppController {
 
@@ -581,7 +581,7 @@ class ProductsController extends AppController {
 		/* Reading file */
 		if ($fileFormat->file_extension == '.csv') {
 			/*$filePath = WWW_ROOT .'product_data'. DS . $fileFormat->supplier['name'] . '.csv';*/
-			$filePath = WWW_ROOT .'product_data'. DS . 'telp.csv';
+			$filePath = WWW_ROOT .'product_data'. DS . 'minMaxPL.csv';
 			$file = fopen($filePath, "r");
 
 			/* Cheking if product is in csv, if so update and remove from productsarray */
@@ -611,7 +611,9 @@ class ProductsController extends AppController {
 						if ($warehouseProduct = $this->WarehousesProducts->findByProductId($product2->id)->first()) {
 							$warehouseProduct->warehouse_id = 1;
 							$warehouseProduct->product_id = $product2->id;
-							$warehouseProduct->stock = intval($row[2]);
+							$warehouseProduct->stock = intval($row[4]);
+							$warehouseProduct->minimum_stock = intval($row[2]);
+							$warehouseProduct->maximum_stock = intval($row[3]);
 
 							$this->WarehousesProducts->save($warehouseProduct);
 						} else {
@@ -619,7 +621,9 @@ class ProductsController extends AppController {
 
 							$warehouseProduct->warehouse_id = 1;
 							$warehouseProduct->product_id = $product2->id;
-							$warehouseProduct->stock = intval($row[2]);
+							$warehouseProduct->stock = intval($row[4]);
+							$warehouseProduct->minimum_stock = intval($row[2]);
+							$warehouseProduct->maximum_stock = intval($row[3]);
 
 							$this->WarehousesProducts->save($warehouseProduct);
 						}
@@ -644,7 +648,9 @@ class ProductsController extends AppController {
 
 					$warehouseProduct->warehouse_id = 1;
 					$warehouseProduct->product_id = $product2->id;
-					$warehouseProduct->stock = intval($row[2]);
+					$warehouseProduct->stock = intval($row[4]);
+					$warehouseProduct->minimum_stock = intval($row[2]);
+					$warehouseProduct->maximum_stock = intval($row[3]);
 
 					$this->WarehousesProducts->save($warehouseProduct);
 				}
@@ -772,7 +778,7 @@ class ProductsController extends AppController {
 			//			}
 		}
 	}
-	
+
 	public function test() {
 		/* Find file format */
 		$this->loadModel('FileFormats');
@@ -799,11 +805,11 @@ class ProductsController extends AppController {
 				if (!(count($row) > 1)) {
 					$row = str_replace('"', '', explode(',', implode($row)));
 				}
-				
+
 				$row[$fileFormat->format['barcode']] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[$fileFormat->format['barcode']]);
-				
+
 				if (in_array($row[$fileFormat->format['barcode']], $productsArray)) {
-				
+
 				} else {
 					echo $row[$fileFormat->format['barcode']];
 				}

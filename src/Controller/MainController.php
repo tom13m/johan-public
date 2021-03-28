@@ -197,10 +197,21 @@ class MainController extends AppController {
 	/* Main function order core section */
 	public function initOrderCoreSection() {
 		if ($this->request->is('post')) {
+			/* Finding all 'active' orders */
+			$this->loadModel('Orders');
 			
+			$orders = $this->Orders->find('all', [
+				'conditions' => [
+					'OR' => [
+						['state' => 'draft'],
+						['state' => 'sent']
+					]
+				]
+			])->order(['order_no' => 'ASC']);
 
 			/* Resetting data array */
 			$data = [];
+				$data['orders'] = $orders;
 
 			$response = ['data' => $data];
 

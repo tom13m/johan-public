@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Migrations\AbstractMigration;
 
-class CreateBookingReasons extends AbstractMigration
+class CreateOrdersProducts extends AbstractMigration
 {
     /**
      * Change Method.
@@ -14,24 +14,24 @@ class CreateBookingReasons extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('booking_reasons');
+        $table = $this->table('orders_products');
 		
-		$table->addColumn('name', 'string', [
-			'null' => false,
-			'length' => 30,
+		$table->addColumn('order_id', 'integer', [
+			'null' => true,
+			'length' => 6,
 			'default' => null
 		]);
 		
-		$table->addColumn('state', 'string', [
-			'null' => false,
-			'length' => 20,
-			'default' => 'positive'
+		$table->addColumn('product_id', 'integer', [
+			'null' => true,
+			'length' => 6,
+			'default' => null
 		]);
 		
-		$table->addColumn('pre-name', 'string', [
+		$table->addColumn('amount', 'integer', [
 			'null' => false,
-			'length' => 20,
-			'default' => null
+			'length' => 3,
+			'default' => 0
 		]);
 		
         $table->create();

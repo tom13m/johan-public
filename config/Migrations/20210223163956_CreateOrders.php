@@ -15,6 +15,18 @@ class CreateOrders extends AbstractMigration
 	public function change()
 	{
 		$table = $this->table('orders');
+		
+		$table->addColumn('name', 'string', [
+			'null' => false,
+			'length' => 100,
+			'default' => null
+		]);
+		
+		$table->addColumn('order_no', 'integer', [
+			'null' => false,
+			'length' => 6,
+			'default' => null
+		]);
 
 		$table->addColumn('datetime', 'datetime', [
 			'null' => true,
@@ -25,6 +37,12 @@ class CreateOrders extends AbstractMigration
 			'null' => false,
 			'length' => 10000,
 			'default' => null
+		]);
+		
+		$table->addColumn('state', 'string', [
+			'null' => false,
+			'length' => 20,
+			'default' => 'draft'
 		]);
 		
 		$table->addColumn('user_id', 'integer', [

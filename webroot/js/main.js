@@ -24,8 +24,10 @@ function processBarcode() {
 			document.getElementById('productFormBarcode').value = barcode;
 		} else if (coreSection == 'stocktaking') {
 			addStocktakingProduct(barcode);
+		} else if (coreSection == 'order') {
+			addProductToOrder(barcode);	   
 		} else {
-				   
+			
 		}
 	}
 }

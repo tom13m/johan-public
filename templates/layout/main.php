@@ -92,6 +92,28 @@
 		}));
 	}
 	
+	/* Function for rendering an element (prepend) */
+	function renderElementAppend(element, data = null, id, callback) {
+		let path = "<?= $this->Url->Build(['controlller' => 'main', 'action' => 'renderElement']); ?>" + "/" + element;
+		
+		$('#' + id).append($('<span>').load(path, {
+			data: data
+		}, function(i) {	
+			let appended = document.getElementsByClassName('appended');
+			
+			$(appended).each(function(i, p) {
+//				$(p).unwrap();
+//				p.classList.remove('appended');
+				
+				console.log('test');
+			})
+			
+			if (callback != null) {
+				callback();
+			}
+		}));
+	}
+	
 	function appendParamVariables(data = null) {
 		let urlVariables = '?';
 		

@@ -27,8 +27,6 @@ class WarehousesController extends AppController {
 			if (isset($data['product_id'])) {
 				$this->loadModel('WarehousesProducts');
 				
-				$test = '';
-				
 				if ($warehouseProduct = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['warehouse_id'], 'product_id' => $data['product_id']])->first()) {
 					$data['difference'] = $warehouseProduct->stock - $data['product_stock' . $warehouse->id];
 					
@@ -94,24 +92,25 @@ class WarehousesController extends AppController {
 					$warehouse->productStock = $warehouse->products[0]->_joinData->stock;
 					
 					$product->totalStock += $warehouse->productStock;
+					
+					$warehouse->minimumStock = $warehouse->products[0]->_joinData->minimum_stock;
+					$warehouse->maximumStock = $warehouse->products[0]->_joinData->maximum_stock;
 				} else {
 					$warehouse->productStock = 0;
-				}
-				
-				$warehouse->minimumStock = $warehouse->products[0]->_joinData->minimum_stock;
-				$warehouse->maximumStock = $warehouse->products[0]->_joinData->maximum_stock;
+					
+					$warehouse->minimumStock = 0;
+					$warehouse->maximumStock = 0;
+				}	
 
 				unset($warehouse->products);
 				
 				array_push($warehousesList, ['value' => $warehouse->id, 'text' => $warehouse->name]);
 			}
 			
-			
 			$data = [];
 				$data['product'] = $product;
 				$data['warehouses'] = $warehouses;
 				$data['warehousesList'] = $warehousesList;
-				$data['test'] = $test;
 			
 			$response['data'] = $data;
 		} else {
