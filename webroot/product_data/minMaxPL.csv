@@ -141,14 +141,14 @@
 "8405631,Rehau Rautitan voorgemonteerde geminibeugel 16xRp1/2""x150mm LX 11681771001,5,15,10"
 "8405632,Rehau Rautitan voorgemonteerde geminibeugel 20xRp1/2""x150mm LX 11681781001,5,15,0"
 8302923,Honeywell thermische motor 230V NC 4mm MT4230NC,2,4,8
-"7501412,IMI Heimeier Mikrotherm radiatorafsluiter recht 1/2"" Kvs = 1,61 m3/h 012202500,4,8,5"
-"7501455,IMI Heimeier Regulux voetventiel recht 1/2"" - Kvs = 1,31 m3/h m. Vul- en aftapmogelijkheid 035202000,4,10,7"
+"7501412,""""IMI Heimeier Mikrotherm radiatorafsluiter recht 1/2"" Kvs = 1,61 m3/h 012202500"""",4,8,5"
+"7501455,""""IMI Heimeier Regulux voetventiel recht 1/2"" - Kvs = 1,31 m3/h m. Vul- en aftapmogelijkheid 035202000"""",4,10,7"
 "4058026,Plieger design afvoerplug vlak m. overloop 5/4"" pop-up chroom PU-120,2,4,4"
 7500885,IMI Heimeier Halo thermostaatkop M30x1.5 m. temperatuur vergrendeling wit (RAL9016) 750000500,2,4,3
 8302875,Honeywell draadloze RF module aan/uit 24-230V 5A t.b.v. ketelschakeling BDR91A1000,1,2,2
 7501546,IMI Heimeier K thermostaatkop M30x1.5 cap. 1.25 m m. afstandsvoeler 600100500,1,1,2
-"7501374,IMI Heimeier Mikrotherm radiatorafsluiter haaks 1/2"" Kvs = 1,99 m3/h 012102500,4,8,2"
-1602102,IMI Heimeier Regutec voetventiel haaks voetventiel haaks Kvs = 1,74 m3/h 035502000,4,10,6
+"7501374,""""IMI Heimeier Mikrotherm radiatorafsluiter haaks 1/2"" Kvs = 1,99 m3/h 012102500"""",4,8,2"
+"1602102,""IMI Heimeier Regutec voetventiel haaks voetventiel haaks Kvs = 1,74 m3/h 035502000"",4,10,6"
 "520069,Plieger designbekersifon verkort rond m. muurbuis 30cm 5/4"" m. rozet chroom 0520069,2,4,1"
 7910052,Itho Daalderop bedieningen en benodigdheden RFT-zender W CVE, CVD, HRU wit 5360124,0,0,3
 8303539,Honeywell Evohome draadloze radiatorregelaar HR92WE,2,4,1
@@ -408,8 +408,8 @@
 8430061,ZNB CV-buis elektrolytisch verzinkt DIN 2394 15x1.5mm lengte=3m, prijs=per meter CV15153000,0,0,47
 2440096,KME Sanco roodkoperen buis sanco 2.5 meter 15mm lengte=2.5m, prijs=per lengte 7067280,0,0,10,6
 2440095,KME Sanco roodkoperen buis sanco 2.5 meter 12mm lengte=2.5m, prijs=per lengte 7067278,0,0,10
-1402050,R-VENT SSPB spiralobuis 150mm - 0,4mm lgt=3m, prijs=per lgt SSPB0150040300,0,0,0
-1451367,R-VENT SSPB spiralobuis 125mm - 0,4mm lgt=3m, prijs=per lgt SSPB0125040300,0,0,14
+"1402050,""R-VENT SSPB spiralobuis 150mm - 0,4mm lgt=3m, prijs=per lgt SSPB0150040300"",0,0,0"
+"1451367,""R-VENT SSPB spiralobuis 125mm - 0,4mm lgt=3m, prijs=per lgt SSPB0125040300"",0,0,14"
 1034030,K-Flex PE buisisolatie 15x13mm lengte=2m, prijs=per meter, doos=240m PE13-015,30,240,242
 1034003,K-Flex PE buisisolatie 22x13mm lengte=2m, prijs=per meter, doos=168m PE13-022,30,168,138
 8402276,Rehau Rautitan cliphalfschaal 32mm lengte=3m, prijs=per meter 11380631001,5,15,9
