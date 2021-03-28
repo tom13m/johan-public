@@ -585,7 +585,7 @@ class ProductsController extends AppController {
 			$file = fopen($filePath, "r");
 
 			/* Cheking if product is in csv, if so update and remove from productsarray */
-			while (($row = fgetcsv($file)) !== FALSE) {
+			while (($row = fgetcsv($file,1000,",",'"')) !== FALSE) {
 				if (!(count($row) > 1)) {
 					$row = str_replace('"', '', explode(',', implode($row)));
 				}
