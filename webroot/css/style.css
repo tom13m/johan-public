@@ -26,6 +26,12 @@ form {
 	height: 100%;
 }
 
+.textOverflow {
+	overflow: hidden; 
+    white-space: nowrap; 
+	text-overflow: ellipsis;
+}
+
 .contentBody {
 	background-color: whitesmoke;
 	padding: 0 !important;
@@ -362,6 +368,13 @@ form {
 	height: 40px;
 	line-height: 40px;
 	border: 1px solid var(--patent-color);
+	cursor: pointer;
+}
+
+.orderListItem.active {
+	background-color: var(--main-dark-color);
+	border: 1px solid var(--main-dark-color);
+	cursor: default;
 }
 
 .orderListAddButton {
@@ -465,6 +478,41 @@ form {
 
 .orderTab.active {
 	display: block !important;
+}
+
+.orderSection {
+	height: 475px;
+	overflow: auto;
+}
+
+.orderSection.products {
+	scroll-behavior: smooth;
+}
+
+.orderProducts {
+	display: none !important;
+	
+}
+
+.orderProducts.active {
+	display: block !important;
+}
+
+.orderProductRow {
+	height: 40px;
+	line-height: 40px;
+	border-top: 1px solid var(--patent-color);
+	border-bottom: 1px solid var(--patent-color);
+	transition: 0.5s;
+}
+
+.orderProductRow.highlight {
+	background-color: var(--main-color);
+}
+
+.orderProductRowAmountField {
+	width: 50px;
+	height: 100%;
 }
 
 

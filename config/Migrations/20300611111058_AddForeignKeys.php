@@ -26,7 +26,7 @@ class AddForeignKeys extends AbstractMigration
 		/* Customers */
 		$table = $this->table('customers');
 		
-		$table->addForeignKey('location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
+		$table->addForeignKey('location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
 		
 		$table->save();
 		
@@ -34,7 +34,7 @@ class AddForeignKeys extends AbstractMigration
 		/* Suppliers */
 		$table = $this->table('suppliers');
 		
-		$table->addForeignKey('location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
+		$table->addForeignKey('location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
 		
 		$table->save();
 		
@@ -42,7 +42,7 @@ class AddForeignKeys extends AbstractMigration
 		/* Warehouses */
 		$table = $this->table('warehouses');
 		
-		$table->addForeignKey('location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
+		$table->addForeignKey('location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
 		
 		$table->save();
 		
@@ -50,7 +50,7 @@ class AddForeignKeys extends AbstractMigration
 		/* Products */
 		$table = $this->table('products');
 		
-		$table->addForeignKey('supplier_id', 'suppliers', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
+		$table->addForeignKey('supplier_id', 'suppliers', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
 		
 		$table->save();
 		
@@ -68,10 +68,10 @@ class AddForeignKeys extends AbstractMigration
 		/* Bookings */
 		$table = $this->table('bookings');
 		
-		$table->addForeignKey('product_id', 'products', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
-		$table->addForeignKey('from_location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
-		$table->addForeignKey('to_location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
-		$table->addForeignKey('booking_reason_id', 'booking_reasons', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
+		$table->addForeignKey('product_id', 'products', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
+		$table->addForeignKey('from_location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
+		$table->addForeignKey('to_location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
+		$table->addForeignKey('booking_reason_id', 'booking_reasons', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
 		
 		$table->save();
 		
@@ -105,8 +105,8 @@ class AddForeignKeys extends AbstractMigration
 		/* WarehousesProducts */
 		$table = $this->table('warehouses_products');
 		
-		$table->addForeignKey('warehouse_id', 'warehouses', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
-		$table->addForeignKey('product_id', 'products', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
+		$table->addForeignKey('warehouse_id', 'warehouses', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
+		$table->addForeignKey('product_id', 'products', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
 		
 		$table->save();
 		
@@ -114,8 +114,8 @@ class AddForeignKeys extends AbstractMigration
 		/* OrdersProducts */
 		$table = $this->table('orders_products');
 		
-		$table->addForeignKey('order_id', 'orders', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
-		$table->addForeignKey('product_id', 'products', 'id', ['update' => 'cascade', 'delete' => 'cascade']);
+		$table->addForeignKey('order_id', 'orders', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
+		$table->addForeignKey('product_id', 'products', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
 		
 		$table->save();
     }

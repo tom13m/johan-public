@@ -32,7 +32,12 @@ class CreateWarehouses extends AbstractMigration
 			'null' => true,
 			'length' => 6,
 			'default' => null
-		])/*->addForeignKey('location_id', 'locations', 'id', ['update' => 'cascade', 'delete' => 'cascade'])*/;
+		]);
+		
+		$table->addColumn('order_warehouse', 'boolean', [
+			'null' => false,
+			'default' => false
+		]);
 		
         $table->create();
     }

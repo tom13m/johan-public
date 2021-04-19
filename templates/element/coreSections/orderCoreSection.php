@@ -27,9 +27,9 @@
 						<div class="orderListBody row">
 							<!-- Active orders will be shown in this list -->
 							<div id="orderList" class="col-md-12">
-								<?php Foreach ($data['orders'] as $order) {
-									echo $this->Element('coreSections/orderCoreSection/orderRow', ["order" => $order]);
-								} ?>
+								<?php if (isset($data['orders'])) { Foreach ($data['orders'] as $order) {
+	echo $this->Element('coreSections/orderCoreSection/orderRow', ["order" => $order]);
+}} ?>
 							</div>
 						</div>
 						<div id="orderListAdd" class="orderListAddButton row">
@@ -101,7 +101,7 @@
 													<div class="col-md-5">
 														Naam van het product
 													</div>
-													<div class="col-md-3">
+													<div class="col-md-2">
 														Leverancier
 													</div>
 													<div class="col-md-2">
@@ -113,8 +113,10 @@
 												</div>
 
 												<!-- Order product sections will be displayed here -->
-												<div id="orderProductsSection" class="orderProductsSection col-md-12">
-													
+												<div id="orderProductsSectionParent" class="orderSection products row">
+													<div id="orderProductsSection" class="col-md-12">
+
+													</div>
 												</div>
 											</div>
 										</div>
@@ -122,6 +124,11 @@
 										<!-- Send options tab -->
 										<div id="orderSendOptionsTab" class="orderTab row">
 											Test 2
+
+											<!-- Order product sections will be displayed here -->
+											<div id="orderSendOptionsSection" class="orderSection col-md-12">
+
+											</div>
 										</div>
 									</div>
 								</div>
@@ -139,16 +146,68 @@
 <script>
 	/* Function for adding a product to the opened order list */
 	function addProductToOrder(barcode) {
-		let data = {};
-		data['barcode'] = barcode;
-
 		/* Check if a order is opened on the page */
-		let orderListProductsSection = 
+		let orderListProductsSection = document.querySelector('.orderProducts.active');
+
+		if (orderListProductsSection != null) {
+			/* Send add request to controller */
+			let data = {};
+			data['barcode'] = barcode;
+			let orderId = data['orderId'] = orderListProductsSection.id.replace('orderProducts', '');
 
 			ajaxRequest('Orders', 'addProductToOrder', data, process);
 
-		function process(data) {
-			console.log(data);
+			function process(data, success) {
+				if (success == 2) {
+					/* Scroll to order product row */
+					let orderProductRow;
+					
+					$('[barcode = ' + data['orderProduct']['barcode'] + ']').each(function(i, row) {
+						if (row.getAttribute('order') == data['orderProduct']['orderId']) {
+							orderProductRow = row;
+						}
+					});
+					
+					document.getElementById('orderProductsSectionParent').scrollTop = orderProductRow.offsetTop;
+					
+					/* Create short highlight */
+//					for (i = 0; i <= 3; i++) {
+//						orderProductRow.classList.add('highlight');
+//						
+//						setInterval(function() { 
+//							orderProductRow.classList.remove('highlight');
+//							
+//							continue;
+//						}, 500);
+//					}
+					let i = 0;
+					
+					let interval = setInterval(function() { 
+						orderProductRow.classList.toggle('highlight');
+						i++;
+						
+						if (i >= 6) {
+							clearInterval(interval);
+						}
+					}, 500);
+				} else if (success != 0) {
+					/* Add new product of order row to view */
+					let elementPath = 'coreSections_orderCoreSection_orderProductRow';
+					let elementId = 'orderProductRows' + orderId;
+
+					/* Check if it is the first product to be added to the order */
+					if (data['orderProduct']['first'] == true) {
+						$('#' + elementId).empty();
+					}
+
+					renderElementAppend(elementPath, data, elementId);
+				} else {
+
+				}
+			}
+		} else {
+			/* Give message */
+
 		}
 	}
 
@@ -156,16 +215,40 @@
 	function removeProductFromOrder(barcode) {
 
 	}
-	
+
 	/* Function for displaying an order */
-	function displayOrder(orderId) {
-		let data = {};
-		data['orderId'] = orderId;
-		
-		ajaxRequest('Orders', 'getOrderData', data, process);
-		
-		function process(data) {
-			
+	function displayOrder(orderId, orderTabId) {
+		/* Check if order is already opened */
+		if (orderProducts = document.getElementById('orderProducts' + orderId) != null) {
+			/* Display already opened order */
+			setActive('orderProducts', 'orderProducts' + orderId);
+
+			/* Set active order tab */
+			setActive('orderListItem', orderTabId);
+		} else {
+			/* Open unopened order */
+			let data = {};
+			data['orderId'] = orderId;
+
+			ajaxRequest('Orders', 'getOrderData', data, process);
+
+			function process(data) {
+				/* Check for and close an opened order */
+				let activeOrder = document.querySelector('.orderProducts.active');
+
+				if (activeOrder != null) {
+					activeOrder.classList.remove('active');
+				}
+
+				/* Render order products */
+				let elementPath = 'coreSections_orderCoreSection_orderProducts';
+				let elementId = 'orderProductsSection';
+
+				renderElementAppend(elementPath, data, elementId);
+
+				/* Set active order tab */	
+				setActive('orderListItem', orderTabId);
+			}
 		}
 	}
 
@@ -178,8 +261,6 @@
 		ajaxRequest('Orders', 'addOrder', formData, process);
 
 		function process(data) {
-			console.log(data);
-
 			/* Close add order section */
 			toggleAddOrderList(true);
 

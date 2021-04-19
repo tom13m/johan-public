@@ -61,7 +61,7 @@ class WarehousesController extends AppController {
 			$bookingData = array(
 				'product_id' => $data['product_id'],
 				'amount' => $data['difference'],
-				'from_location_id' => $data['warehouse_id']
+				'from_location_id' => $warehouse->location_id
 			);
 
 			$this->writeBooking($bookingData);

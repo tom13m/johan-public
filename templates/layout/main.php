@@ -105,7 +105,7 @@
 //				$(p).unwrap();
 //				p.classList.remove('appended');
 				
-				console.log('test');
+//				console.log('test');
 			})
 			
 			if (callback != null) {
@@ -144,9 +144,10 @@
 				
 				if (typeof response.data !== 'undefined') {
 					data = response.data;
+					success = response.success;
 					
 					if (callback != null) {
-						callback(data);
+						callback(data, success);
 					}
 				} else if (response.success == 0) {
 					data = null;
@@ -154,9 +155,10 @@
 					giveError(response.errorTemplate);
 				} else {
 					data = null;
+					success = response.success;
 					
 					if (callback != null) {
-						callback(data);
+						callback(data, success);
 					}
 				}
 			},
