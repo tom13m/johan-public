@@ -463,8 +463,25 @@ form {
 .orderSaveIcon {
 	color: white;
 	position: absolute;
-	right: 3%;
+	right: 0;
+	height: 40px;
+	width: 40px;
 	line-height: 40px !important;
+	text-align: center;
+}
+
+.orderRemoveProductsIcon {
+	color: white;
+	position: absolute;
+	right: 40px;
+	height: 40px;
+	width: 40px;
+	line-height: 40px !important;
+	text-align: center;
+}
+
+.orderRemoveProductsIcon.active {
+	background-color: var(--main-dark-color);
 }
 
 .orderContentBody {
@@ -504,6 +521,10 @@ form {
 	border-top: 1px solid var(--patent-color);
 	border-bottom: 1px solid var(--patent-color);
 	transition: 0.5s;
+}
+
+.orderProductRow.active {
+	background-color: #999999;
 }
 
 .orderProductRow.highlight {

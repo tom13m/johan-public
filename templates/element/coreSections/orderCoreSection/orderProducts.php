@@ -18,5 +18,6 @@
 		?>
 	</div>
 	
+	<?= $this->Form->hidden('order_id', ['id' => false, 'value' => $data['order']['id']]); ?>
 	<?= $this->Form->end(); ?>
 </div>

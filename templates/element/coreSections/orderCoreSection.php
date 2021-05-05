@@ -74,7 +74,7 @@
 					<!-- Order content block -->
 					<div class="col-md-9">
 						<div class="fullHeight row">
-							<div class="orderContent col-md-10">
+							<div class="orderContent col-md-11">
 								<!-- Head order content -->
 								<div class="orderContentHead row">
 									<div class="col-md-12">
@@ -86,7 +86,13 @@
 												Verzendopties
 											</div>
 
-											<i class="orderSaveIcon fas fa-save" onclick=""> </i>
+											<!-- Icon for activating remove option -->
+											<div id="orderRemoveProductsIcon" class="orderRemoveProductsIcon" onclick="toggleRemoveProductsFromOrderMode()">
+												<i class="fas fa-trash"> </i>
+											</div>
+
+											<!-- Icon for saving current order -->
+											<i class="orderSaveIcon fas fa-save" onclick="saveOrder()"> </i>
 										</div>
 									</div>
 								</div>
@@ -98,11 +104,14 @@
 										<div id="orderProductsTab" class="orderTab active row">
 											<div class="col-md-12">
 												<div class="orderSpecHead row">
-													<div class="col-md-5">
+													<div class="col-md-4">
 														Naam van het product
 													</div>
 													<div class="col-md-2">
 														Leverancier
+													</div>
+													<div class="col-md-2">
+														Voorraad
 													</div>
 													<div class="col-md-2">
 														Min/Max
@@ -144,6 +153,48 @@
 
 <!-- Temporary script -->
 <script>
+	/* Function for toggling the remove mode to remove products from an order */
+	function toggleRemoveProductsFromOrderMode() {
+		/* Check if a order is opened on the page */
+		let orderListProductsSection = document.querySelector('.orderProducts.active');
+
+		if (orderListProductsSection != null) {
+			let orderRemoveProductsIcon = document.getElementById('orderRemoveProductsIcon');
+
+			if (orderRemoveProductsIcon.classList.contains('active')) {
+				/* Disable remove mode and remove products from order */
+				orderRemoveProductsIcon.classList.remove('active');
+
+				let orderId = orderListProductsSection.id.replace('orderProducts', '');
+
+				let orderProductRowsDivId = 'orderProductRows' + orderId;
+				let orderProductRows = document.getElementById(orderProductRowsDivId).querySelectorAll('.orderProductRow');
+				let orderListItem = document.getElementById('orderListItem' + orderId).setAttribute('removeMode', 'false');
+
+				$(orderProductRows).each(function(i, orderProductRow) {
+					$(orderProductRow).off('click');
+				});
+			} else {
+				/* Activate remove mode */
+				orderRemoveProductsIcon.classList.add('active');
+
+				let orderId = orderListProductsSection.id.replace('orderProducts', '');
+
+				let orderProductRowsDivId = 'orderProductRows' + orderId;
+				let orderProductRows = document.getElementById(orderProductRowsDivId).querySelectorAll('.orderProductRow');
+				let orderListItem = document.getElementById('orderListItem' + orderId).setAttribute('removeMode', 'true');
+
+				$(orderProductRows).each(function(i, orderProductRow) {
+					$(orderProductRow).on('click', function() {
+						toggleOrderProductActive(orderProductRow.id);
+					});
+				});
+			}
+		} else {
+			/* Do not activate remove mode */
+		}
+	}
+
 	/* Function for adding a product to the opened order list */
 	function addProductToOrder(barcode) {
 		/* Check if a order is opened on the page */
@@ -161,31 +212,22 @@
 				if (success == 2) {
 					/* Scroll to order product row */
 					let orderProductRow;
-					
+
 					$('[barcode = ' + data['orderProduct']['barcode'] + ']').each(function(i, row) {
 						if (row.getAttribute('order') == data['orderProduct']['orderId']) {
 							orderProductRow = row;
 						}
 					});
-					
+
 					document.getElementById('orderProductsSectionParent').scrollTop = orderProductRow.offsetTop;
-					
+
 					/* Create short highlight */
-//					for (i = 0; i <= 3; i++) {
-//						orderProductRow.classList.add('highlight');
-//						
-//						setInterval(function() { 
-//							orderProductRow.classList.remove('highlight');
-//							
-//							continue;
-//						}, 500);
-//					}
 					let i = 0;
-					
+
 					let interval = setInterval(function() { 
 						orderProductRow.classList.toggle('highlight');
 						i++;
-						
+
 						if (i >= 6) {
 							clearInterval(interval);
 						}
@@ -211,9 +253,54 @@
 		}
 	}
 
-	/* Function for removing a product from an order list */
-	function removeProductFromOrder(barcode) {
+	/* Function for toggling an order product active for removing */
+	function toggleOrderProductActive(id) {
+		let element = document.getElementById(id);
 
+		element.classList.toggle('active');
+
+		/* If activated disable form fields */
+		let orderProductIdField = element.id + 'ProductField';
+		let orderProductAmountField = element.id + 'AmountField';
+
+		if (element.classList.contains('active')) {
+			//			console.log(orderProductIdField);
+
+			document.getElementById(orderProductIdField).disabled = true;
+			document.getElementById(orderProductAmountField).disabled = true;
+		} else {
+			document.getElementById(orderProductIdField).disabled = false;
+			document.getElementById(orderProductAmountField).disabled = false;
+		}
+	}
+
+	/* Function for saving an order */
+	function saveOrder() {
+		/* Checking if and which a form is opened */
+		let orderListProductsSection = document.querySelector('.orderProducts.active');
+
+		if (orderListProductsSection != null) {
+			/* Getting order form data */
+			let orderId = orderListProductsSection.id.replace('orderProducts', '');
+			let form = document.getElementById('orderProductsForm' + orderId);
+			let formData = serializeFormData(form);
+
+			/* Saving order */
+			ajaxRequest('Orders', 'saveOrder', formData, process);
+
+			function process(data) {
+				/* Checking if products need to be removed */
+				let orderProductRows = $('[order = ' + data['order']['id'] + '].orderProductRow');
+
+				$(orderProductRows).each(function(i, orderProductRow) {
+					if (!data['barcodeArray'].includes(orderProductRow.getAttribute('barcode'))) {
+						orderProductRow.remove();
+					}
+				});
+			}
+		} else {
+			/* Do not execute save action */
+		}
 	}
 
 	/* Function for displaying an order */
@@ -225,6 +312,16 @@
 
 			/* Set active order tab */
 			setActive('orderListItem', orderTabId);
+
+			/* Check if remove mode is activated */
+			let orderListItem = document.getElementById('orderListItem' + orderId);
+			let orderRemoveProductsIcon = document.getElementById('orderRemoveProductsIcon');
+
+			if (orderListItem.getAttribute('removeMode') == 'true') {
+				orderRemoveProductsIcon.classList.add('active');
+			} else {
+				orderRemoveProductsIcon.classList.remove('active');
+			}
 		} else {
 			/* Open unopened order */
 			let data = {};
@@ -248,6 +345,10 @@
 
 				/* Set active order tab */	
 				setActive('orderListItem', orderTabId);
+
+				/* Disable remove mode for order */
+				let orderRemoveProductsIcon = document.getElementById('orderRemoveProductsIcon');
+				orderRemoveProductsIcon.classList.remove('active');
 			}
 		}
 	}
@@ -268,7 +369,13 @@
 			let elementPath = 'coreSections_orderCoreSection_orderRow';
 			let elementId = 'orderList';
 
-			renderElementAppend(elementPath, data, elementId);
+			renderElementAppend(elementPath, data, elementId, openRender);
+								
+			function openRender() {
+				let orderTabId = 'orderListItem' + data['order']['id'];
+				
+				displayOrder(data['order']['id'], orderTabId);
+			}
 		}
 	}
 

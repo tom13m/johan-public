@@ -110,7 +110,7 @@ function serializeFormData(form) {
 		let data = {};
 
 		/* Setting the form data to the new data object */
-		$.each($(form).serializeArray(), function() {
+		$.each($(form).serializeArray(), function() {		
 			if (this.name.includes('[]')) {
 				if (typeof data[this.name] === 'undefined') {
 					data[this.name] = [];
