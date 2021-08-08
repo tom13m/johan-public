@@ -32,6 +32,12 @@ class CreateOrders extends AbstractMigration
 			'null' => true,
 			'default' => 'CURRENT_TIMESTAMP'
 		]);
+		
+		$table->addColumn('supplier_id', 'integer', [
+			'null' => true,
+			'length' => 6,
+			'default' => null
+		]);
 
 		$table->addColumn('products', 'string', [
 			'null' => false,
@@ -43,6 +49,18 @@ class CreateOrders extends AbstractMigration
 			'null' => false,
 			'length' => 20,
 			'default' => 'draft'
+		]);
+		
+		$table->addColumn('receipt_name', 'string', [
+			'null' => false,
+			'length' => 30,
+			'default' => null
+		]);
+		
+		$table->addColumn('export_type', 'string', [
+			'null' => false,
+			'length' => 10,
+			'default' => 'PDF'
 		]);
 		
 		$table->addColumn('user_id', 'integer', [

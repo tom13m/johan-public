@@ -27,9 +27,11 @@
 						<div class="orderListBody row">
 							<!-- Active orders will be shown in this list -->
 							<div id="orderList" class="col-md-12">
-								<?php if (isset($data['orders'])) { Foreach ($data['orders'] as $order) {
-	echo $this->Element('coreSections/orderCoreSection/orderRow', ["order" => $order]);
-}} ?>
+								<?php if (isset($data['orders'])) { 
+									Foreach ($data['orders'] as $order) {
+										echo $this->Element('coreSections/orderCoreSection/orderRow', ["order" => $order]); 
+									}
+								} ?>
 							</div>
 						</div>
 						<div id="orderListAdd" class="orderListAddButton row">
@@ -49,15 +51,23 @@
 										<p class="addOrderFormTitle"> Naam: </p>
 									</div>
 									<div class="col-md-9">
-										<?= $this->Form->control('name', ['label' => false, 'class' => 'addOrderFormNameField']); ?>
+										<?= $this->Form->control('name', ['label' => false, 'class' => 'addOrderFormTextField']); ?>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-2">
-										<?= $this->Form->control('autoFill', ['label' => false, 'type' => 'checkbox', 'class' => 'addOrderFormCheckbox']); ?>
+									<div class="col-md-4">
+										<p class="addOrderFormTitle"> Leverancier: </p>
 									</div>
-									<div class="col-md-10">
-										<p class="addOrderFormTitle"> Autovul </p>
+									<div class="col-md-8">
+										<?= $this->Form->control('supplier_id', ['label' => false, 'class' => 'addOrderFormTextField', 'options' => $data['suppliersList']]); ?>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-3">
+										<p class="addOrderFormTitle"> Autovul: </p>
+									</div>
+									<div class="col-md-9">
+										<?= $this->Form->control('autoFill', ['label' => false, 'type' => 'checkbox', 'class' => 'addOrderFormCheckbox']); ?>
 									</div>
 								</div>
 								<div class="row">
@@ -124,7 +134,7 @@
 												<!-- Order product sections will be displayed here -->
 												<div id="orderProductsSectionParent" class="orderSection products row">
 													<div id="orderProductsSection" class="col-md-12">
-
+														
 													</div>
 												</div>
 											</div>
@@ -132,11 +142,9 @@
 
 										<!-- Send options tab -->
 										<div id="orderSendOptionsTab" class="orderTab row">
-											Test 2
-
 											<!-- Order product sections will be displayed here -->
 											<div id="orderSendOptionsSection" class="orderSection col-md-12">
-
+												
 											</div>
 										</div>
 									</div>
@@ -244,7 +252,8 @@
 
 					renderElementAppend(elementPath, data, elementId);
 				} else {
-
+					/* Give error message */
+					giveError(data['errorTemplate']);
 				}
 			}
 		} else {
@@ -342,6 +351,12 @@
 				let elementId = 'orderProductsSection';
 
 				renderElementAppend(elementPath, data, elementId);
+						
+				/* Render send options */
+				elementPath = 'coreSections_orderCoreSection_orderSendOptions';
+				elementId = 'orderSendOptionsSection';
+				
+				renderElement(elementPath, data, elementId);
 
 				/* Set active order tab */	
 				setActive('orderListItem', orderTabId);
@@ -411,6 +426,19 @@
 
 			addOrderList.classList.add('active');
 			closeIcon.classList.add('active');
+		}
+	}
+	
+	/* Toggle customer order in order send options */
+	function toggleOrderSendOptionsCustomer(checked) {
+		let customerField = document.getElementById('orderSendOptionsCustomerField');
+		
+		if (checked == true) {
+			/* Allow customer order */
+			customerField.disabled = false;
+		} else {
+			/* Block customer order */
+			customerField.disabled = true;
 		}
 	}
 

@@ -90,8 +90,6 @@ class ProductsController extends AppController {
 			}
 
 			/* Write booking */
-
-
 			$bookingData = array(
 				'product_id' => $data['product_id'],
 				'amount' => $data['amount'],
@@ -327,12 +325,14 @@ class ProductsController extends AppController {
 			$productCount = count($data['products']);
 
 			for ($i = 0; $i < $productCount; $i++) {
-				$warehouseProduct = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['warehouse_id'], 'product_id' => $data['products'][$i]])->first();
 				$bookingReason = $this->BookingReasons->findById($data['bookingReasons'][$i])->first();
+				
+				$warehouseProduct = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['warehouse_id'], 'product_id' => $data['products'][$i]])->first();
+				
 
-				if ($bookingReason->state == 'negative') {
-					$data['amounts'][$i] = $data['amounts'][$i] * -1;
-				}
+//				if ($bookingReason->state == 'negative') {
+//					$data['amounts'][$i] = $data['amounts'][$i] * -1;
+//				}
 
 				if ($warehouseProduct != null) {
 					$warehouseProduct->stock = $warehouseProduct->stock + $data['amounts'][$i];
@@ -347,14 +347,14 @@ class ProductsController extends AppController {
 				$this->WarehousesProducts->save($warehouseProduct);
 
 				/* Write booking */
-				$bookingData = array(
-					'product_id' => $data['products'][$i],
-					'amount' => $data['amounts'][$i],
-					'from_location_id' => $this->Warehouses->findById($data['warehouse_id'])->first()->location_id,
-					'booking_reason_id' => $data['bookingReasons'][$i]
-				);
-
-				$this->writeBooking($bookingData);
+//				$bookingData = array(
+//					'product_id' => $data['products'][$i],
+//					'amount' => $data['amounts'][$i],
+//					'from_location_id' => $this->Warehouses->findById($data['warehouse_id'])->first()->location_id,
+//					'booking_reason_id' => $data['bookingReasons'][$i]
+//				);
+//
+//				$this->writeBooking($bookingData);
 			}
 
 			$response['data'] = $data;

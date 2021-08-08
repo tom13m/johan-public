@@ -18,6 +18,20 @@ form {
 	width: 100%;
 }
 
+.checkbox {
+	width: 20px;
+	height: 20px;
+}
+
+.radio {
+	display: inline;
+}
+
+.radioButton {
+	width: 15px;
+	height: 15px;
+}
+
 .displayNone {
 	display: none;
 }
@@ -393,7 +407,7 @@ form {
 }
 
 .addOrderFormVisibleTitle {
-	padding: 0px 0px 5% 0px;
+	
 }
 
 .addOrderFormCloseIcon {
@@ -410,22 +424,25 @@ form {
 .addOrderFormTitle {
 	padding: 0;
 	margin: 0;
+	font-size: 14px;
 }
 
-.addOrderFormNameField {
+.addOrderFormTextField {
 	width: 100%;
+	height: 25px;
+	font-size: 14px;
 }
 
 .addOrderFormCheckbox {
-	height: 25px;
-	width: 25px;
+	height: 20px;
+	width: 20px;
 	margin: 7px 0px 0px 0px;
 }
 
 .addOrderFormSubmit {
 	background-color: var(--main-color);
-	height: 40px;
-	line-height: 40px;
+	height: 30px;
+	line-height: 30px;
 	text-align: center;
 }
 
@@ -499,11 +516,11 @@ form {
 
 .orderSection {
 	height: 475px;
-	overflow: auto;
 }
 
 .orderSection.products {
 	scroll-behavior: smooth;
+	overflow: auto;
 }
 
 .orderProducts {
@@ -536,6 +553,37 @@ form {
 	height: 100%;
 }
 
+.orderSendOptionsSupplier {
+	height: 100%;
+	margin: 3% 0px 2% 0px;
+}
+
+.orderSendOptionsReceed {
+	height: 100%;
+	margin: 3% 0px 2% 0px;
+	background-color: var(--patent-color);
+}
+
+.orderSendOptionsTitle {
+	font-weight: bold;
+	margin: 1% 0px 0px 0px;
+}
+
+.orderSendOptionsCustomerRow * {
+	width: 100%;
+}
+
+.orderSendOptionsCustomerField {
+	width: 90%;
+}
+
+.orderSendOptionsCustomerCheckbox {
+	width: 
+}
+
+.orderSendOptionsExportType {
+	margin: 5% 0px 0px 0px; 
+}
 
 /* |||||||||| Action Menus |||||||||| */
 

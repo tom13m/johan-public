@@ -5,13 +5,6 @@ use Migrations\AbstractMigration;
 
 class CreateBookingReasons extends AbstractMigration
 {
-    /**
-     * Change Method.
-     *
-     * More information on this method is available here:
-     * https://book.cakephp.org/phinx/0/en/migrations.html#the-change-method
-     * @return void
-     */
     public function change()
     {
         $table = $this->table('booking_reasons');
@@ -22,13 +15,12 @@ class CreateBookingReasons extends AbstractMigration
 			'default' => null
 		]);
 		
-		$table->addColumn('state', 'string', [
+		$table->addColumn('balance', 'boolean', [
 			'null' => false,
-			'length' => 20,
-			'default' => 'positive'
+			'default' => true
 		]);
 		
-		$table->addColumn('pre-name', 'string', [
+		$table->addColumn('prename', 'string', [
 			'null' => false,
 			'length' => 20,
 			'default' => null

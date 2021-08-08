@@ -38,7 +38,6 @@ class MainController extends AppController {
 
 	/* Index function */
 	public function index() {
-
 	}
 
 	/* Main function scan core section */
@@ -208,10 +207,16 @@ class MainController extends AppController {
 					]
 				]
 			])->order(['order_no' => 'ASC']);
+			
+			/* Finding all current suppliers */
+			$this->loadModel('Suppliers');
+			
+			$suppliersList = $this->Suppliers->find('list', ['keyField' => 'id', 'valueField' => 'name']);
 
 			/* Resetting data array */
 			$data = [];
 				$data['orders'] = $orders;
+				$data['suppliersList'] = $suppliersList;
 
 			$response = ['data' => $data];
 

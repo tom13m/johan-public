@@ -68,6 +68,9 @@ $routes->scope('/', function (RouteBuilder $builder) {
      * ...and connect the rest of 'Pages' controller's URLs.
      */
     $builder->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
+	
+	/* PDF extension enabled */
+	$builder->setExtensions(['pdf']);
 
     /*
      * Connect catchall routes for all controllers.

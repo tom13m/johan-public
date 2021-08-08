@@ -95,6 +95,7 @@ class AddForeignKeys extends AbstractMigration
 		/* Orders */
 		$table = $this->table('orders');
 		
+		$table->addForeignKey('supplier_id', 'suppliers', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
 		$table->addForeignKey('user_id', 'users', 'id', ['update' => 'cascade', 'delete' => 'set_null']);
 		
 		$table->save();
