@@ -3,6 +3,20 @@
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
+
+/* Configuration for pdf generator */
+Configure::write('CakePdf', [
+	'engine' => 'CakePdf.dompdf',
+	'margin' => [
+		'bottom' => 15,
+		'left' => 50,
+		'right' => 30,
+		'top' => 45
+	],
+	'orientation' => 'landscape',
+	'download' => false
+]);
 
 class MainController extends AppController {
 
@@ -35,9 +49,37 @@ class MainController extends AppController {
 
 		$this->render('/Element/' . $element);
 	}
+	
+	/* Function for rendering a PDF file */
+	public function renderPDF() {
+		$this->RequestHandler->renderAs($this, 'json');
+		
+		if ($this->request->is('post')) {
+			/* Receiving possible data and sending it to the view */
+			if (!empty($this->request->getData('data'))) {
+				$data = $this->request->getData('data');
+				$data['test'] = 'test';
+
+				$this->set(compact('data'));
+			}
+		}
+
+//		$element = str_replace('_', '/', $element);
+
+		$this->viewBuilder()->setClassName('CakePdf.Pdf');
+		
+		$this->render('/Element/coreSections/orderCoreSection/pdf/order');
+
+		$this->viewBuilder()->setOption(
+			'pdfConfig', [
+				'filename' => 'Test.pdf' // This can be omitted if you want file name based on URL.
+			]
+		);
+	}
 
 	/* Index function */
 	public function index() {
+		
 	}
 
 	/* Main function scan core section */

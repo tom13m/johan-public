@@ -578,11 +578,19 @@ form {
 }
 
 .orderSendOptionsCustomerCheckbox {
-	width: 
+	
 }
 
 .orderSendOptionsExportType {
 	margin: 5% 0px 0px 0px; 
+}
+
+.orderSendOptionsButton {
+	height: 50px;
+	background-color: var(--main-color);
+	color: white;
+	line-height: 50px;
+	text-align: center;
 }
 
 /* |||||||||| Action Menus |||||||||| */

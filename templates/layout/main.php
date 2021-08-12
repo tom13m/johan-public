@@ -114,6 +114,12 @@
 		}));
 	}
 	
+	function generateRoute(controller, action) {
+		let route = "<?= $this->Url->Build(['controller' => '']); ?>" + '/' + controller + '/' + action;
+		
+		return route;
+	}
+	
 	function appendParamVariables(data = null) {
 		let urlVariables = '?';
 		

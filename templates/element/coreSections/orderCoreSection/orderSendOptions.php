@@ -1,7 +1,7 @@
 <!-- Element for the order send options section -->
 <div class="orderSendOptions fullHeight row">
 	<div class="col-md-12">
-		<?= $this->Form->create(null, ['id' => 'orderSendOptionsForm', 'class' => 'fullHeight']); ?>
+		<?= $this->Form->create(null, ['id' => 'orderSendOptionsForm' . $data['order']['id'], 'class' => 'fullHeight']); ?>
 
 		<div class="fullHeight row">
 			<div class="col-md-6">
@@ -57,19 +57,16 @@
 						</div>
 						<div class="orderSendOptionsExportType row">
 							<div class="col-md-12">
-								<?= $this->Form->control('export_type', ['label' => false, 'type' => 'radio', 'options' => [['value' => 'PDF', 'text' => false]], 'class' => 'radioButton']); ?>
-								PDF formaat
-							</div>
-						</div>
-						<div class="orderSendOptionsExportType row">
-							<div class="col-md-12">
-								<?= $this->Form->control('export_type', ['label' => false, 'type' => 'radio', 'options' => [['value' => 'CSV', 'text' => false]], 'class' => 'radioButton']); ?>
-								CSV formaat
+								<?= $this->Form->control('export_type', ['label' => false, 'type' => 'radio', 'options' => [['value' => 'PDF', 'text' => 'PDF formaat'], ['value' => 'CSV', 'text' => 'CSV formaat']], 'class' => 'radioButton', 'default' => $data['order']['export_type']]); ?>
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-md-12">
-								
+							<div class="col-md-4">
+								<div class="row">
+									<div class="orderSendOptionsButton col-md-10 offset-md-1" onclick="exportOrder(<?= $data['order']['id']; ?>)">
+										Exporteer
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

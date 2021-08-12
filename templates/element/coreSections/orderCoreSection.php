@@ -161,6 +161,21 @@
 
 <!-- Temporary script -->
 <script>
+	/* Function for exporting an order */
+	function exportOrder(orderId) {
+		/* First, save order */
+		saveOrder(executeExport);
+		
+		/* Execute export */
+		function executeExport(data) {
+			let route = generateRoute('Orders', 'exportOrder') + '/' + data['order']['id'];
+			
+			if (data['order']['export_type'] == 'PDF') {
+				window.open(route, '_blank');
+			}
+		}	
+	}
+	
 	/* Function for toggling the remove mode to remove products from an order */
 	function toggleRemoveProductsFromOrderMode() {
 		/* Check if a order is opened on the page */
@@ -284,15 +299,24 @@
 	}
 
 	/* Function for saving an order */
-	function saveOrder() {
+	function saveOrder(callback = null) {
 		/* Checking if and which a form is opened */
 		let orderListProductsSection = document.querySelector('.orderProducts.active');
 
 		if (orderListProductsSection != null) {
-			/* Getting order form data */
+			/* Getting order forms data */
 			let orderId = orderListProductsSection.id.replace('orderProducts', '');
-			let form = document.getElementById('orderProductsForm' + orderId);
-			let formData = serializeFormData(form);
+			
+			/* Products */
+			let productsForm = document.getElementById('orderProductsForm' + orderId);
+			let productsFormData = serializeFormData(productsForm);
+			
+			/* Send options */
+			let sendOptionsForm = document.getElementById('orderSendOptionsForm' + orderId);
+			let sendOptionsFormData = serializeFormData(sendOptionsForm);
+			
+			/* Generalising data */
+			let formData = Object.assign(productsFormData, sendOptionsFormData);
 
 			/* Saving order */
 			ajaxRequest('Orders', 'saveOrder', formData, process);
@@ -306,6 +330,10 @@
 						orderProductRow.remove();
 					}
 				});
+				
+				if (callback != null) {
+					callback(data);
+				}
 			}
 		} else {
 			/* Do not execute save action */
