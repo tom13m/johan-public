@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
-use CakePdf\Pdf\CakePdf;
+use CakePdf\CakePdf;
 
 /* Configuration for pdf generator */
 Configure::write('CakePdf', [
