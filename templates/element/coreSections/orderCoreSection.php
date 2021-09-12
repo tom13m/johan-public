@@ -172,6 +172,12 @@
 			
 			if (data['order']['export_type'] == 'PDF') {
 				window.open(route, '_blank');
+			} else if (data['order']['export_type'] == 'CSV') {
+				let filename = data['order']['receipt_name'];
+				let rows = data['order']['products'];
+				let properties = ['amount', 'barcode'];
+				
+				exportToCsv(filename, rows, properties);
 			}
 		}	
 	}

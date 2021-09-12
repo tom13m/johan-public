@@ -123,18 +123,18 @@ function serializeFormData(form) {
 				data[this.name] = this.value;
 			}
 		});
-		
+
 		/* Removing block brackets */
 		$(Object.keys(data)).each(function(i, key) {
 			if (key.includes('[]')) {
 				oldKey = key;
 				newKey = key.replace('[]', '');
-				
+
 				data[newKey] = data[oldKey];
 				delete data[oldKey];
 			}
 		});
-		
+
 		return data;
 	} else {
 		return false;
@@ -198,4 +198,34 @@ function giveError(errorTemplate) {
 /* Function for redirecting */
 function redirect(url) {
 	window.location.href = url;
+}
+
+/* Function for exporting to CSV */
+function exportToCsv(filename, rows, properties) {
+	let csvContent = "data:text/csv;charset=utf-8,";
+
+	/* Create CSV rows */
+	$(rows).each(function(i, row) {
+		let csvRow = '';
+
+		for (property of properties.values()) {
+			csvRow += row[property];
+			csvRow += ',';
+		}
+
+		/* Strip last comma */
+//		csvRow = csvRow.slice(0, -1);
+
+		/* Add to CSV content */
+		csvContent += csvRow + "\r\n";
+	});
+
+	let encodedUri = encodeURI(csvContent);
+	
+	let link = document.createElement("a");
+	link.setAttribute("href", encodedUri);
+	link.setAttribute("download", filename + ".csv");
+	document.body.appendChild(link);
+
+	link.click();
 }
