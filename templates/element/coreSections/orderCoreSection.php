@@ -28,10 +28,10 @@
 							<!-- Active orders will be shown in this list -->
 							<div id="orderList" class="col-md-12">
 								<?php if (isset($data['orders'])) { 
-									Foreach ($data['orders'] as $order) {
-										echo $this->Element('coreSections/orderCoreSection/orderRow', ["order" => $order]); 
-									}
-								} ?>
+	Foreach ($data['orders'] as $order) {
+		echo $this->Element('coreSections/orderCoreSection/orderRow', ["order" => $order]); 
+	}
+} ?>
 							</div>
 						</div>
 						<div id="orderListAdd" class="orderListAddButton row">
@@ -89,6 +89,9 @@
 								<div class="orderContentHead row">
 									<div class="col-md-12">
 										<div class="orderTitleHead row">
+											<div id="orderProductStateTab" class="orderStatusTab">
+												Status
+											</div>
 											<div id="orderProductsTitleTab" class="orderTitleTab active" onclick="switchOrderTab('products')">
 												Producten
 											</div>
@@ -134,7 +137,7 @@
 												<!-- Order product sections will be displayed here -->
 												<div id="orderProductsSectionParent" class="orderSection products row">
 													<div id="orderProductsSection" class="col-md-12">
-														
+
 													</div>
 												</div>
 											</div>
@@ -144,7 +147,7 @@
 										<div id="orderSendOptionsTab" class="orderTab row">
 											<!-- Order product sections will be displayed here -->
 											<div id="orderSendOptionsSection" class="orderSection col-md-12">
-												
+
 											</div>
 										</div>
 									</div>
@@ -165,23 +168,23 @@
 	function exportOrder(orderId) {
 		/* First, save order */
 		saveOrder(executeExport);
-		
+
 		/* Execute export */
 		function executeExport(data) {
 			let route = generateRoute('Orders', 'exportOrder') + '/' + data['order']['id'];
-			
+
 			if (data['order']['export_type'] == 'PDF') {
 				window.open(route, '_blank');
 			} else if (data['order']['export_type'] == 'CSV') {
 				let filename = data['order']['receipt_name'];
 				let rows = data['order']['products'];
 				let properties = ['amount', 'barcode'];
-				
+
 				exportToCsv(filename, rows, properties);
 			}
 		}	
 	}
-	
+
 	/* Function for toggling the remove mode to remove products from an order */
 	function toggleRemoveProductsFromOrderMode() {
 		/* Check if a order is opened on the page */
@@ -312,15 +315,15 @@
 		if (orderListProductsSection != null) {
 			/* Getting order forms data */
 			let orderId = orderListProductsSection.id.replace('orderProducts', '');
-			
+
 			/* Products */
 			let productsForm = document.getElementById('orderProductsForm' + orderId);
 			let productsFormData = serializeFormData(productsForm);
-			
+
 			/* Send options */
 			let sendOptionsForm = document.getElementById('orderSendOptionsForm' + orderId);
 			let sendOptionsFormData = serializeFormData(sendOptionsForm);
-			
+
 			/* Generalising data */
 			let formData = Object.assign(productsFormData, sendOptionsFormData);
 
@@ -336,7 +339,7 @@
 						orderProductRow.remove();
 					}
 				});
-				
+
 				if (callback != null) {
 					callback(data);
 				}
@@ -349,9 +352,14 @@
 	/* Function for displaying an order */
 	function displayOrder(orderId, orderTabId) {
 		/* Check if order is already opened */
-		if (orderProducts = document.getElementById('orderProducts' + orderId) != null) {
+		if (orderProducts = document.getElementById('orderProducts' + orderId) != null) {	
 			/* Display already opened order */
 			setActive('orderProducts', 'orderProducts' + orderId);
+			setActive('orderSendOptions', 'orderSendOptions' + orderId);
+
+			/* Set order state */
+			let state = document.getElementById('orderSendOptionsState' + orderId).value;
+			document.getElementById('orderProductStateTab').innerHTML = state;
 
 			/* Set active order tab */
 			setActive('orderListItem', orderTabId);
@@ -374,10 +382,16 @@
 
 			function process(data) {
 				/* Check for and close an opened order */
-				let activeOrder = document.querySelector('.orderProducts.active');
+				let activeOrderProducts = document.querySelector('.orderProducts.active');
 
-				if (activeOrder != null) {
-					activeOrder.classList.remove('active');
+				if (activeOrderProducts != null) {
+					activeOrderProducts.classList.remove('active');
+				}
+
+				let activeOrderSendOptions = document.querySelector('.orderSendOptions.active');
+
+				if (activeOrderSendOptions != null) {
+					activeOrderSendOptions.classList.remove('active');
 				}
 
 				/* Render order products */
@@ -385,12 +399,15 @@
 				let elementId = 'orderProductsSection';
 
 				renderElementAppend(elementPath, data, elementId);
-						
+
 				/* Render send options */
 				elementPath = 'coreSections_orderCoreSection_orderSendOptions';
 				elementId = 'orderSendOptionsSection';
-				
-				renderElement(elementPath, data, elementId);
+
+				renderElementAppend(elementPath, data, elementId);
+
+				/* Set order state */
+				document.getElementById('orderProductStateTab').innerHTML = data['order']['state'];
 
 				/* Set active order tab */	
 				setActive('orderListItem', orderTabId);
@@ -419,13 +436,18 @@
 			let elementId = 'orderList';
 
 			renderElementAppend(elementPath, data, elementId, openRender);
-								
+
 			function openRender() {
 				let orderTabId = 'orderListItem' + data['order']['id'];
-				
+
 				displayOrder(data['order']['id'], orderTabId);
 			}
 		}
+	}
+	
+	/* Function for mailing */
+	function mail() {
+		ajaxRequest('Orders', 'mail');
 	}
 
 	/* Function for switching order tabs */
@@ -462,11 +484,11 @@
 			closeIcon.classList.add('active');
 		}
 	}
-	
+
 	/* Toggle customer order in order send options */
 	function toggleOrderSendOptionsCustomer(checked) {
 		let customerField = document.getElementById('orderSendOptionsCustomerField');
-		
+
 		if (checked == true) {
 			/* Allow customer order */
 			customerField.disabled = false;

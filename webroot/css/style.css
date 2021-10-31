@@ -456,6 +456,15 @@ form {
 	line-height: 40px;
 }
 
+.orderStatusTab {
+	width: auto;
+	height: 100%;
+	padding: 0% 3% 0% 3%;
+	display: inline;
+	background-color: var(--secondary-color);
+	color: white;
+}
+
 .orderTitleTab {
 	width: auto;
 	height: 100%;
@@ -553,6 +562,14 @@ form {
 	height: 100%;
 }
 
+.orderSendOptions {
+	display: none !important;
+}
+
+.orderSendOptions.active {
+	display: block !important;
+}
+
 .orderSendOptionsSupplier {
 	height: 100%;
 	margin: 3% 0px 2% 0px;
@@ -583,6 +600,10 @@ form {
 
 .orderSendOptionsExportType {
 	margin: 5% 0px 0px 0px; 
+}
+
+.orderSendOptionsActions {
+	
 }
 
 .orderSendOptionsButton {

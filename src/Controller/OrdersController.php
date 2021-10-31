@@ -5,6 +5,7 @@ namespace App\Controller;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use CakePdf\CakePdf;
+use Cake\Mailer\Mailer;
 
 /* Configuration for pdf generator */
 Configure::write('CakePdf', [
@@ -79,11 +80,20 @@ class OrdersController extends AppController {
 					array_push($order->products, $product);
 				}
 			}
-			
+
 			/* Preparing list of customers */
 			$this->loadModel('Customers');
-			
+
 			$customersList = $this->Customers->find('list', ['keyField' => 'id', 'valueField' => 'name']);
+
+			/* Define order state */
+			if ($order->state == 'draft') {
+				$order->state = 'Concept';
+			} elseif ($order->state == 'sent') {
+				$order->state = 'Verzonden';
+			} elseif ($order->state == 'done') {
+				$order->state = 'Afgerond';
+			}
 
 			/* Resetting data array */
 			$data = [];
@@ -280,14 +290,14 @@ class OrdersController extends AppController {
 				} else {
 					/* Product does not belong to supplier */
 					$data['errorTemplate'] = 'falseBarcodeSupplier';
-					
+
 					$response['data'] = $data;
 					$response['success'] = 0;
 				}
 			} else {
 				/* Product not found */
 				$data['errorTemplate'] = 'falseBarcode';
-					
+
 				$response['data'] = $data;
 				$response['success'] = 0;
 			}
@@ -324,7 +334,7 @@ class OrdersController extends AppController {
 			$order->products = $productsArray;
 			$s_order = clone $order;
 			$s_order->products = serialize($productsArray);
-			
+
 			/* Setting other properties */
 			$s_order->receipt_name = $data['receipt_name'];
 			$s_order->export_type = $data['export_type'];
@@ -349,19 +359,31 @@ class OrdersController extends AppController {
 		$this->viewBuilder()->setOption('serialize', true);
 		$this->RequestHandler->renderAs($this, 'json');
 	}
-	
+
+	/* Function for mailing */
+	public function mail() {
+//		if ($this->request->is('post')) {
+			$email = new Mailer();
+			$email->setTransport('mail');
+			$email->setFrom(['dijkematom@gmail.com' => 'My Site'])
+				->setTo('dijkematom@gmail.com')
+				->setSubject('Test')
+				->deliver('Hallo!');
+//		}
+	}
+
 	/* Function for exporting an order */
 	public function exportOrder($orderId = null) {		
 		if ($orderId != null) {
 			$order = $this->Orders->findById($orderId)->contain(['Suppliers'])->first();
 			$order->products = unserialize($order->products);
-			
+
 			$data = [];
 			$data['order'] = $order;
 			$data['route'] = 'coreSections/orderCoreSection/pdf/order';
-				
+
 			$this->set(compact('data'));
-			
+
 			/* Render PDF */
 			$this->viewBuilder()->setClassName('CakePdf.Pdf');
 
@@ -372,7 +394,7 @@ class OrdersController extends AppController {
 					'download' => false
 				]
 			);
-			
+
 			$this->render('/Element/coreSections/orderCoreSection/pdf/order');
 		}
 	}
@@ -387,9 +409,9 @@ class OrdersController extends AppController {
 		//                'filename' => 'Test'
 		//            ]
 		//        );
-		
+
 		$this->viewBuilder()->setClassName('CakePdf.Pdf');
-		
+
 		$this->render('/Element/coreSections/orderCoreSection/pdf/order');
 
 		$this->viewBuilder()->setOption(
@@ -397,7 +419,7 @@ class OrdersController extends AppController {
 			[
 				'filename' => 'Test.pdf', // This can be omitted if you want file name based on URL.
 				'download' => false // This can be omitted if "filename" is specified.
-				
+
 			]
 		);
 	}

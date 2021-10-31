@@ -1,7 +1,9 @@
 <!-- Element for the order send options section -->
-<div class="orderSendOptions fullHeight row">
+<div id="<?= 'orderSendOptions' . $data['order']['id']; ?>" class="orderSendOptions active fullHeight row">
 	<div class="col-md-12">
 		<?= $this->Form->create(null, ['id' => 'orderSendOptionsForm' . $data['order']['id'], 'class' => 'fullHeight']); ?>
+
+		<?= $this->Form->hidden('state', ['id' => 'orderSendOptionsState' . $data['order']['id'], 'value' => $data['order']['state']]); ?>
 
 		<div class="fullHeight row">
 			<div class="col-md-6">
@@ -60,11 +62,27 @@
 								<?= $this->Form->control('export_type', ['label' => false, 'type' => 'radio', 'options' => [['value' => 'PDF', 'text' => 'PDF formaat'], ['value' => 'CSV', 'text' => 'CSV formaat']], 'class' => 'radioButton', 'default' => $data['order']['export_type']]); ?>
 							</div>
 						</div>
-						<div class="row">
+						<div class="orderSendOptionsMailAddress row"> 
+							<div class="col-md-12">
+								<?php if (isset($data['order']['email_address'])) {
+									echo 'E-mailadres: ' . $this->Form->control('email_address', ['label' => false, 'value' => $data['order']['email_address'], 'class' => 'orderSendOptionsEmailAddressField']);
+  								} else {
+									echo 'E-mailadres: ' . $this->Form->control('email_address', ['label' => false, 'class' => 'orderSendOptionsEmailAddressField']);
+								} ?>
+							</div>
+						</div>
+						<div class="orderSendOptionsActions row">
 							<div class="col-md-4">
 								<div class="row">
 									<div class="orderSendOptionsButton col-md-10 offset-md-1" onclick="exportOrder(<?= $data['order']['id']; ?>)">
 										Exporteer
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4 offset-md-1">
+								<div class="row">
+									<div class="orderSendOptionsButton col-md-10 offset-md-1" onclick="mail()"> 
+										Mail
 									</div>
 								</div>
 							</div>
