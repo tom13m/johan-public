@@ -335,9 +335,9 @@ class ProductsController extends AppController {
 				$warehouseProduct = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['warehouse_id'], 'product_id' => $data['products'][$i]])->first();
 
 				if ($warehouseProduct != null) {
-					if ($bookingReason->balance == true) {
+					if ($bookingReason->balance == 1) {
 						$warehouseProduct->stock = $warehouseProduct->stock + $data['amounts'][$i];
-					} elseif ($bookingReason->balance == false) {
+					} elseif ($bookingReason->balance == 0) {
 						$warehouseProduct->stock = $warehouseProduct->stock - $data['amounts'][$i];
 					}
 				} else {
