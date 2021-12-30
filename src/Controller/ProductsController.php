@@ -27,17 +27,22 @@ class ProductsController extends AppController {
 			} elseif ($data['product_id'] != false) {
 				$product = $this->Products->findById($data['product_id'])->first();
 			}
+			
+			if ($product != null) {
+				/* Creating booking reasons list */
+				$this->loadModel('BookingReasons');
 
-			/* Creating booking reasons list */
-			$this->loadModel('BookingReasons');
+				$bookingReasonsList = $this->BookingReasons->find('list', ['keyField' => 'id', 'valueField' => 'name']);
 
-			$bookingReasonsList = $this->BookingReasons->find('list', ['keyField' => 'id', 'valueField' => 'name']);
-
-			$data = [];
-			$data['product'] = $product;
-			$data['bookingReasonsList'] = $bookingReasonsList;
-
-			$response['data'] = $data;
+				$data = [];
+				$data['product'] = $product;
+				$data['bookingReasonsList'] = $bookingReasonsList;
+				
+				$response['data'] = $data;
+			} else {
+				$response['success'] = 0;
+				$response['errorTemplate'] = 'failure';
+			}
 
 			$this->set(compact('response'));
 			$this->viewBuilder()->setOption('serialize', true);
@@ -328,14 +333,13 @@ class ProductsController extends AppController {
 				$bookingReason = $this->BookingReasons->findById($data['bookingReasons'][$i])->first();
 				
 				$warehouseProduct = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['warehouse_id'], 'product_id' => $data['products'][$i]])->first();
-				
-
-//				if ($bookingReason->state == 'negative') {
-//					$data['amounts'][$i] = $data['amounts'][$i] * -1;
-//				}
 
 				if ($warehouseProduct != null) {
-					$warehouseProduct->stock = $warehouseProduct->stock + $data['amounts'][$i];
+					if ($bookingReason->balance == true) {
+						$warehouseProduct->stock = $warehouseProduct->stock + $data['amounts'][$i];
+					} elseif ($bookingReason->balance == false) {
+						$warehouseProduct->stock = $warehouseProduct->stock - $data['amounts'][$i];
+					}
 				} else {
 					$warehouseProduct = $this->WarehousesProducts->newEmptyEntity();
 

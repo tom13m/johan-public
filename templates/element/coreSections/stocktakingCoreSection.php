@@ -176,10 +176,12 @@
 			let data = {
 				'barcode': barcode
 			}
+			
+			console.log('midnight');
 
 			ajaxRequest('Products', 'getProductData', data, process);
 
-			function process(data) {
+			function process(data, success) {
 				let elementPath = 'coreSections_stocktakingCoreSection_productRow';
 				let elementId = 'stocktakingProductsBody';
 
