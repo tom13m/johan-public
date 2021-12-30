@@ -330,7 +330,7 @@ class ProductsController extends AppController {
 			$productCount = count($data['products']);
 
 			for ($i = 0; $i < $productCount; $i++) {
-				$bookingReason = $this->BookingReasons->findById($data['bookingReasons'][$i])->first();
+				$bookingReason = $this->BookingReasons->find()->where(['id' => $data['bookingReasons'][$i]])->first();
 				
 				$warehouseProduct = $this->WarehousesProducts->find()->where(['warehouse_id' => $data['warehouse_id'], 'product_id' => $data['products'][$i]])->first();
 
