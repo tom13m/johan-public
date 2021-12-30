@@ -224,11 +224,12 @@ return [
 			'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
 		], 'mail' => [
 			'className' => 'Smtp',
-			'host' => 'smtp.strato.com',
-			'port' => 465,
-			'timeout' => 30,
+			'host' => 'h2903261.stratoserver.net',
+			'port' => 587,
+			'timeout' => 20,
 			'username' => 'info@johto.nl',
-			'password' => 'x2Dn#1g7'
+			'password' => 'x2Dn#1g7',
+			'tls' => false
 		],
 	],
 
@@ -243,8 +244,8 @@ return [
      */
 	'Email' => [
 		'default' => [
-			'transport' => 'default',
-			'from' => 'you@localhost',
+			'transport' => 'mail',
+			'from' => 'info@johto.nl',
 			/*
              * Will by default be set to config value of App.encoding, if that exists otherwise to UTF-8.
              */

@@ -422,7 +422,6 @@
 	/* Function for adding a new order list */
 	function addOrderList() {
 		let form = document.getElementById('addOrderForm');
-
 		let formData = serializeFormData(form);
 
 		ajaxRequest('Orders', 'addOrder', formData, process);
@@ -444,10 +443,48 @@
 			}
 		}
 	}
-	
+
 	/* Function for mailing */
-	function mail() {
-		ajaxRequest('Orders', 'mail');
+	function mailOrder(orderId) {
+		/* Get form data */
+		let form = document.getElementById('orderSendOptionsForm' + orderId);
+		let formData = serializeFormData(form);
+
+		console.log(formData);
+
+		if (formData['attachments'].includes('CSV')) {
+			saveOrder(generateCsv);
+
+			function generateCsv(data) {
+				let filename = data['order']['receipt_name'];
+				let rows = data['order']['products'];
+				let properties = ['amount', 'barcode'];
+				
+				data['attachments'] = formData['attachments'];
+
+				/* Generate csv array */
+				let csvArray = exportToCsv(filename, rows, properties, true);
+
+				data['csvArray'] = csvArray;
+
+				ajaxRequest('Orders', 'orderMail', data, process);
+			}
+		} else {
+			ajaxRequest('Orders', 'orderMail', formData, process);
+		}
+
+		function process(data) {
+			console.log(data);
+			
+//			if (data['success'] == 1) {
+//				console.log('success');
+//			} else {
+//				console.log('failure');
+//				console.log(data['data']);
+//			}
+		}
+
+		//		ajaxRequest('Orders', 'orderMail', formData, process);
 	}
 
 	/* Function for switching order tabs */

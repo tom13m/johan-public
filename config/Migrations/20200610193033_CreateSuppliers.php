@@ -28,6 +28,12 @@ class CreateSuppliers extends AbstractMigration
 			'default' => null
 		]);
 		
+		$table->addColumn('email_address', 'string', [
+			'null' => false,
+			'length' => 100,
+			'default' => null
+		]);
+		
 		$table->addColumn('location_id', 'integer', [
 			'null' => true,
 			'length' => 6,

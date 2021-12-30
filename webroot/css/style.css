@@ -576,8 +576,14 @@ form {
 }
 
 .orderSendOptionsReceed {
-	height: 100%;
+	height: auto;
 	margin: 3% 0px 2% 0px;
+	background-color: var(--patent-color);
+}
+
+.orderSendOptionsMail {
+	height: auto;
+	margin: 2% 0px 2% 0px;
 	background-color: var(--patent-color);
 }
 
@@ -607,11 +613,16 @@ form {
 }
 
 .orderSendOptionsButton {
-	height: 50px;
+	height: 35px;
+	width: 40%;
 	background-color: var(--main-color);
 	color: white;
-	line-height: 50px;
+	line-height: 35px;
 	text-align: center;
+}
+
+.orderSendOptionsButton.mail {
+	margin: 3% 0px 0px 0px;
 }
 
 /* |||||||||| Action Menus |||||||||| */

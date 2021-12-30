@@ -62,29 +62,51 @@
 								<?= $this->Form->control('export_type', ['label' => false, 'type' => 'radio', 'options' => [['value' => 'PDF', 'text' => 'PDF formaat'], ['value' => 'CSV', 'text' => 'CSV formaat']], 'class' => 'radioButton', 'default' => $data['order']['export_type']]); ?>
 							</div>
 						</div>
+						<div class="orderSendOptionsActions row">
+							<div class="col-md-12">
+								<div class="orderSendOptionsButton" onclick="exportOrder(<?= $data['order']['id']; ?>)">
+									Exporteer
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="orderSendOptionsMail col-md-11">
+						<div class="row">
+							<div class="col-md-12">
+								<p class="orderSendOptionsTitle"> Mailen </p>
+							</div>
+						</div>
 						<div class="orderSendOptionsMailAddress row"> 
 							<div class="col-md-12">
-								<?php if (isset($data['order']['email_address'])) {
-									echo 'E-mailadres: ' . $this->Form->control('email_address', ['label' => false, 'value' => $data['order']['email_address'], 'class' => 'orderSendOptionsEmailAddressField']);
+								<?php if (isset($data['order']['supplier']['email_address'])) {
+									echo 'E-mailadres: ' . $this->Form->control('email_address', ['label' => false, 'value' => $data['order']['supplier']['email_address'], 'class' => 'orderSendOptionsEmailAddressField']);
   								} else {
 									echo 'E-mailadres: ' . $this->Form->control('email_address', ['label' => false, 'class' => 'orderSendOptionsEmailAddressField']);
 								} ?>
 							</div>
 						</div>
-						<div class="orderSendOptionsActions row">
-							<div class="col-md-4">
+						<div class="orderSendOptionsAttachments row">
+							<div class="col-md-12">
+								<p> Bijlagen: </p>
 								<div class="row">
-									<div class="orderSendOptionsButton col-md-10 offset-md-1" onclick="exportOrder(<?= $data['order']['id']; ?>)">
-										Exporteer
+									<div class="col-md-1">
+										<?= $this->Form->control('attachments[]', ['type' => 'checkbox', 'class' => 'checkbox', 'label' => false, 'value' => 'PDF']); ?>
 									</div>
+									<div class="col-md-11"> PDF </div>
+								</div>
+								<div class="row">
+									<div class="col-md-1">
+										<?= $this->Form->control('attachments[]', ['type' => 'checkbox', 'class' => 'checkbox', 'label' => false, 'value' => 'CSV']); ?>
+									</div>
+									<div class="col-md-11"> CSV </div>
 								</div>
 							</div>
-							<div class="col-md-4 offset-md-1">
-								<div class="row">
-									<div class="orderSendOptionsButton col-md-10 offset-md-1" onclick="mail()"> 
-										Mail
-									</div>
-								</div>
+						</div>
+						<div class="orderSendOptionsActions row">
+							<div class="col-md-12">
+								<div class="orderSendOptionsButton mail" onclick="mailOrder(<?= $data['order']['id']; ?>)"> 
+									Mail
+								</div>		
 							</div>
 						</div>
 					</div>

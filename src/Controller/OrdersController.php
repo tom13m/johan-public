@@ -6,6 +6,9 @@ use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use CakePdf\CakePdf;
 use Cake\Mailer\Mailer;
+use Cake\View\View;
+use Cake\Http\Response;
+use Cake\Http;
 
 /* Configuration for pdf generator */
 Configure::write('CakePdf', [
@@ -361,15 +364,103 @@ class OrdersController extends AppController {
 	}
 
 	/* Function for mailing */
-	public function mail() {
-//		if ($this->request->is('post')) {
+	public function orderMail() {
+		$response = [];
+
+		if ($this->request->is('post')) {
+			$data = $this->request->getData('data');
+
 			$email = new Mailer();
 			$email->setTransport('mail');
-			$email->setFrom(['dijkematom@gmail.com' => 'My Site'])
-				->setTo('dijkematom@gmail.com')
-				->setSubject('Test')
-				->deliver('Hallo!');
-//		}
+			$email->setFrom(['info@johto.nl' => 'johto.nl'])
+				->setTo(/*$data['email_address']*/'dijkematom@gmail.com')
+				->setSubject(/*$data['receipt_name']*/'Test');
+
+			$attachments = $data['attachments'];
+
+			/* Check for flagged attachments */
+			//		$CakePdf = new \CakePdf\Pdf\CakePdf();
+			//		$CakePdf->template($pdf, 'default');
+			//		$pdfTemplate = $CakePdf->output();
+
+			//		$pdf = $this->exportOrder(6);
+
+			//				debug($pdf);
+
+			foreach ($attachments as $attachment) {
+				switch ($attachment) {
+					case "CSV":
+						/* Prepare CSV file */
+						$csvFile = fopen(APP . 'files' . DS . 'empty.csv', "w");
+
+						foreach ($data['csvArray'] as $line) {
+							fputcsv($csvFile, $line);
+						}
+
+						fclose($csvFile);
+
+						$email->addAttachments([
+							'test.csv' => [
+								'file' => APP . 'Files' . DS . 'empty.csv'
+							]
+						]);
+
+						break;
+					case "PDF":
+						/* Prepare PDF file */
+						$cakePdf = new \CakePdf\Pdf\CakePdf();
+
+						$cakePdf->template('main', 'main');
+						$cakePdf->viewVars(['key' => 'value']);
+
+						// Get the PDF string returned
+//						$pdf = $CakePdf->output();
+
+						// Or write it to file directly
+						$pdf = $cakePdf->write(APP . 'files' . DS . 'test.pdf');
+						
+						$email->addAttachments([
+							'test.pdf' => [
+								'file' => APP . 'Files' . DS . 'test.pdf'
+							]
+						]);
+
+						break;
+				}
+			}
+
+
+
+			//			if (in_array('CSV', $data['attachments'])) {
+			//				$email->addAttachments([
+			//					'test.csv' => [
+			//						'file' => APP . 'Files' . DS . 'empty.csv'
+			//					]
+			//				]);
+			//			}
+			//				setAttachments([
+			//					/*'test.pdf' => [
+			//								'file' => APP . 'Files' . DS . 'test.pdf',
+			//								'mimetype' => 'MIME-Version: 1.0'
+			//							]*/
+			//					'test.csv' => [
+			//						'file' => APP . 'Files' . DS . 'empty.csv'
+			//					]
+			//				])
+
+						$email->deliver('Test');
+
+			$response['success'] = 1;
+			$response['data'] = $data;
+		} else {
+			$response['success'] = 0;
+		}
+
+
+
+		$this->set(compact('response'));
+		$this->viewBuilder()->setOption('serialize', true);
+		$this->RequestHandler->renderAs($this, 'json');
 	}
 
 	/* Function for exporting an order */
@@ -395,7 +486,7 @@ class OrdersController extends AppController {
 				]
 			);
 
-			$this->render('/Element/coreSections/orderCoreSection/pdf/order');
+			return $this->render('/Element/coreSections/orderCoreSection/pdf/order');
 		}
 	}
 

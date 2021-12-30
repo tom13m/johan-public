@@ -201,8 +201,9 @@ function redirect(url) {
 }
 
 /* Function for exporting to CSV */
-function exportToCsv(filename, rows, properties) {
+function exportToCsv(filename, rows, properties, array = false) {
 	let csvContent = "data:text/csv;charset=utf-8,";
+	let csvArray = [];
 
 	/* Create CSV rows */
 	$(rows).each(function(i, row) {
@@ -213,19 +214,27 @@ function exportToCsv(filename, rows, properties) {
 			csvRow += ',';
 		}
 
-		/* Strip last comma */
-//		csvRow = csvRow.slice(0, -1);
-
 		/* Add to CSV content */
 		csvContent += csvRow + "\r\n";
+	
+		/* Strip last comma */
+//		csvRow = csvRow.slice(0, -1);
+		csvArray.push([csvRow]);
 	});
+	
+	console.log(csvArray);
 
 	let encodedUri = encodeURI(csvContent);
-	
-	let link = document.createElement("a");
-	link.setAttribute("href", encodedUri);
-	link.setAttribute("download", filename + ".csv");
-	document.body.appendChild(link);
 
-	link.click();
+	if (array == true) {
+		return csvArray;
+	} else {
+		let link = document.createElement("a");
+		link.setAttribute("href", encodedUri);
+		link.setAttribute("download", filename + ".csv");
+		document.body.appendChild(link);
+
+		link.click();
+	}
+
 }
