@@ -154,6 +154,8 @@
 		}
 
 		function process(data) {
+			console.log(data);
+			
 			/* Resetting products body and indicating success */
 			let productsBody = document.getElementById('stocktakingProductsBody');
 
